@@ -15,8 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
         <activity
-            android:name=".UpdateActivity"
+            android:name=".ui.UpdateActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +31,7 @@
         </activity>
 
         <receiver
-            android:name=".InstallResultReceiver"
+            android:name=".install.InstallResultReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.yourcompany.agent.INSTALL_RESULT" />
@@ -38,4 +39,10 @@
         </receiver>
     </application>
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 </manifest>

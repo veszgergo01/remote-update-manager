@@ -1,12 +1,18 @@
 <resources>
-    <string name="app_name">PraxtourUpdateManager</string>
-    <string name="app_update_title">App update available</string>
+    <string name="app_name">Praxtour Update Manager</string>
+    <string name="app_update_title">App update available!</string>
     <string name="app_update_description">Your current app version is <b>%s</b>, however an update is available to version <b>%s</b>.</string>
     <string name="app_update_status_download_text">The update is now being downloaded, please <b>do not</b> turn off your device.</string>
-    <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation window.\n<b>The app will close and restart</b> during this process.</string>
+    <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation window.\nOnce the installation has completed, you will be redirected to the app.</string>
     <string name="install_update_button_text">Install</string>
+    <string name="install_in_progress_text">Installing…</string>
     <string name="alternative_title">Welcome to the Praxtour Update Manager!</string>
     <string name="alternative_description">If an update is detected by the system, it will be automatically installed. To open the app, please press the button below.</string>
     <string name="open_praxtour_app_button_text">Open app</string>
     <string name="restart_process_button_text">Retry</string>
+    <string name="permission_required_title">Action needed</string>
+    <string name="permission_required_description">In order to install the newest version of the Praxtour app, please allow the Update Manager to install packages on this device.\n\nAfter pressing the button below, the system will ask you to toggle that permission. Once it is ON, you may need to press the &#9664; symbol to return to this screen.</string>
+    <string name="grant_permission_button_text">Allow</string>
+    <string name="recheck_permission_button_text">Check</string>
+    <string name="no_permission_after_interaction">It seems you have not granted the update manager the permission to install packages on this device. You will not be able to continue using the Praxtour app while the update is not installed.\nIf you believe that you have granted the necessary permissions and are seeing this message, please contact us at service@praxtour.com.</string>
 </resources>
