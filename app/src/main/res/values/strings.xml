@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PraxtourUpdateManager</string>
+    <string name="app_update_title">App update available</string>
+    <string name="app_update_description">Your current app version is <b>%s</b>, however an update is available to version <b>%s</b>.</string>
+    <string name="app_update_status_download_text">The update is now being downloaded, please <b>do not</b> turn off your device.</string>
+    <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation window.\n<b>The app will close and restart</b> during this process.</string>
+    <string name="install_update_button_text">Install</string>
+    <string name="alternative_title">Welcome to the Praxtour Update Manager!</string>
+    <string name="alternative_description">If an update is detected by the system, it will be automatically installed. To open the app, please press the button below.</string>
+    <string name="open_praxtour_app_button_text">Open app</string>
+    <string name="restart_process_button_text">Retry</string>
+</resources>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".UpdateActivity"
+    android:background="@drawable/login">
+
+    <LinearLayout
+        android:id="@+id/login_overlay"
+        android:background="@drawable/imagebutton_blue_border"
+        android:backgroundTint="@color/black_overlay"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/update_title_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="6dp"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:text="@string/app_update_title" />
+
+        <TextView
+            android:id="@+id/update_description_textview"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:text="@string/app_update_description" />
+
+        <TextView
+            android:id="@+id/update_status_textview"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:text="@string/app_update_status_download_text" />
+
+        <Button
+            android:id="@+id/start_installation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            android:text="@string/install_update_button_text"
+            android:visibility="gone"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/open_praxtour_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            android:text="@string/open_praxtour_app_button_text"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/restart_process_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            android:text="@string/restart_process_button_text"
+            android:visibility="gone" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
