@@ -17,7 +17,7 @@ public class ApkDownloader implements ProgressCallback {
 
     private static final String UPDATE_URL = "https://media.praxcloud.eu/app/";
 
-    public static File download(Context context, String updateFilename, ProgressCallback progressCallback) {
+    public static File download(Context context, String updateFilename, long expectedSizeBytes, ProgressCallback progressCallback) {
         final String source = UPDATE_URL + updateFilename;
 
         clearUpdateFolder();
@@ -35,7 +35,7 @@ public class ApkDownloader implements ProgressCallback {
         try {
             inputStream = inputUrl.openStream();
             // I have no idea why Long.MAX_VALUE is used... it was here when I found it
-            readableByteChannel = new CallbackByteChannel(Channels.newChannel(inputStream), Long.MAX_VALUE, progressCallback);
+            readableByteChannel = new CallbackByteChannel(Channels.newChannel(inputStream), expectedSizeBytes, progressCallback);
         } catch (IOException e) {
             Log.e(TAG, "Error while accessing URL for APK update " + e);
         }
@@ -66,6 +66,6 @@ public class ApkDownloader implements ProgressCallback {
 
     @Override
     public void callback(CallbackByteChannel rbc, double progress) {
-        // TODO for tracking and displaying progress
+
     }
 }

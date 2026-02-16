@@ -10,10 +10,10 @@ public class CallbackByteChannel implements ReadableByteChannel {
     ReadableByteChannel rbc;
     long sizeRead;
 
-    public CallbackByteChannel(ReadableByteChannel rbc, long expectedSize,
+    public CallbackByteChannel(ReadableByteChannel rbc, long expectedSizeBytes,
                                ProgressCallback delegate) {
         this.delegate = delegate;
-        this.size = expectedSize;
+        this.size = expectedSizeBytes;
         this.rbc = rbc;
     }
     public void close() throws IOException {
