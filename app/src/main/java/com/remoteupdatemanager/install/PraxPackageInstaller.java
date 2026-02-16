@@ -1,4 +1,4 @@
-package com.remoteupdatemanager;
+package com.remoteupdatemanager.install;
 
 import android.app.PendingIntent;
 import android.content.Context;
