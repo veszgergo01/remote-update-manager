@@ -24,18 +24,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="com.praxupdatemanager.ACTION_PRAX_REMOTE_UPDATE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <receiver
             android:name=".install.InstallResultReceiver"
             android:exported="false">
-            <intent-filter>
-                <action android:name="com.yourcompany.agent.INSTALL_RESULT" />
-            </intent-filter>
         </receiver>
     </application>
 
