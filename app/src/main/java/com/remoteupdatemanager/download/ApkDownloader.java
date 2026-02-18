@@ -17,31 +17,21 @@ public class ApkDownloader implements ProgressCallback {
 
     private static final String UPDATE_URL = "https://media.praxcloud.eu/app/";
 
-    public static File download(Context context, String updateFilename, long expectedSizeBytes, ProgressCallback progressCallback) {
-        final String source = UPDATE_URL + updateFilename;
-
-        clearUpdateFolder();
-
-        URL inputUrl;
-        try {
-            inputUrl = new URL(source);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "URL error during download: " + e);
-            return null;
-        }
+    public static File download(Context context, URL updateFileUrl, long expectedSizeBytes, ProgressCallback progressCallback) {
+        File cacheFolder = context.getCacheDir();
+        clearUpdateFolder(cacheFolder);
 
         ReadableByteChannel readableByteChannel = null;
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
-            inputStream = inputUrl.openStream();
-            // I have no idea why Long.MAX_VALUE is used... it was here when I found it
+            inputStream = updateFileUrl.openStream();
             readableByteChannel = new CallbackByteChannel(Channels.newChannel(inputStream), expectedSizeBytes, progressCallback);
         } catch (IOException e) {
             Log.e(TAG, "Error while accessing URL for APK update " + e);
         }
         if (readableByteChannel == null) return null;
 
-        File outputFile = new File(context.getCacheDir(), updateFilename);
+        File outputFile = new File(context.getCacheDir(), "downloaded-apk.apk");
         Log.d(TAG, "Greg output path: " + outputFile.getAbsolutePath());
         try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
@@ -53,14 +43,11 @@ public class ApkDownloader implements ProgressCallback {
         return outputFile;
     }
 
-    private static void clearUpdateFolder() {
-        File updateFolder = new File(UPDATE_URL);
-        if (updateFolder.isDirectory()) {
-            File[] files = updateFolder.listFiles();
-            if (files == null) return; // already empty
-            for (File file : files) {
-                file.delete();
-            }
+    private static void clearUpdateFolder(File folder) {
+        File[] files = folder.listFiles();
+        if (files == null) throw new IllegalArgumentException("Param folder needs to be a directory");
+        for (File file : files) {
+            file.delete();
         }
     }
 
