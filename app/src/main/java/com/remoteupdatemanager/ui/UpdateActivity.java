@@ -148,6 +148,36 @@ public class UpdateActivity extends AppCompatActivity {
         }).start();
     }
 
+    private List<ApkPublicDescription> fetchAllPackagePublicInfo() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(PRAXCLOUD_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PraxCloud praxCloud = retrofit.create(PraxCloud.class);
+
+        try {
+            return praxCloud.getAllPackagesPublicInfo().execute().body();
+        } catch (IOException e) {
+            throw new RuntimeException("Problem while getting package names");
+        }
+    }
+
+    private URL fetchUpdateLink(String packageName) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(PRAXCLOUD_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PraxCloud praxCloud = retrofit.create(PraxCloud.class);
+
+        try {
+            return praxCloud.getNewestUpdateUrl(packageName, accountToken).execute().body();
+        } catch (IOException e) {
+            throw new RuntimeException("Problem while getting package URL for " + packageName);
+        }
+    }
+
     private final Runnable checkInstallPackagePermissionRunnable = new Runnable() {
         boolean manuallyRechecked = false;
         @Override
