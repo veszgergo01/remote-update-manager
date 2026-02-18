@@ -144,8 +144,7 @@ public class UpdateActivity extends AppCompatActivity {
                 }
             });
 
-            runOnUiThread(checkInstallPackagePermissionRunnable);
-        }).start();
+        return true;
     }
 
     private List<ApkPublicDescription> fetchAllPackagePublicInfo() {
