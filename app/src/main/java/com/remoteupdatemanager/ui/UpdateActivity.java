@@ -53,6 +53,12 @@ public class UpdateActivity extends AppCompatActivity {
     private LinearLayout installationInProgressLayout;
     private SeekBar downloadStatusProgressBar;
     private TextView appAccountInfoTextView;
+    private final BroadcastReceiver installResultLocalReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            processNextPackage();
+        }
+    };
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

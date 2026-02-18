@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.util.Log;
 
-import com.remoteupdatemanager.ui.UpdateActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
 
 public class InstallResultReceiver extends BroadcastReceiver {
     private final static String TAG = InstallResultReceiver.class.getSimpleName();
@@ -18,7 +20,7 @@ public class InstallResultReceiver extends BroadcastReceiver {
 
         switch (status) {
             case PackageInstaller.STATUS_SUCCESS:
-                UpdateActivity.launchPraxtourMainApp(context);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(EVENT_INSTALL_COMPLETE));
                 break;
             case PackageInstaller.STATUS_PENDING_USER_ACTION:
                 Intent confirmIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT);
