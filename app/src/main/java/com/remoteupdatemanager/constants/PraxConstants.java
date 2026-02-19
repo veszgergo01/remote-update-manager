@@ -2,6 +2,7 @@ package com.remoteupdatemanager.constants;
 
 public class PraxConstants {
     public static final String EXTRA_ACCOUNT_TOKEN = "com.videostreamtest.EXTRA_ACCOUNT_TOKEN";
+    public static final String EXTRA_FIRST_LOGIN = "com.videostreamtest.EXTRA_FIRST_LOGIN";
     public static class ApkUpdate {
         public static final String EVENT_INSTALL_COMPLETE = "com.videostreamtest.EVENT_INSTALL_COMPLETE";
     }

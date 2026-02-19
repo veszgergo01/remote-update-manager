@@ -37,6 +37,8 @@ import com.remoteupdatemanager.download.ProgressCallback;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
 import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
+import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
+import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FIRST_LOGIN;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +76,7 @@ public class UpdateActivity extends AppCompatActivity {
             processNextPackage();
         }
     };
+    boolean manuallyRecheckedInstallPermission = false;
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -82,7 +85,7 @@ public class UpdateActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     switch (result.getResultCode()) {
                         case Activity.RESULT_OK:
-                            runOnUiThread(UpdateActivity.this::showInstallationStep);
+//                            runOnUiThread(UpdateActivity.this::showInstallationStep);
                             break;
                         case Activity.RESULT_CANCELED:
                             // TODO show permission required page
@@ -117,9 +120,20 @@ public class UpdateActivity extends AppCompatActivity {
 
         openPraxtourButton.setOnClickListener(view -> launchPraxtourMainApp());
         restartProcessButton.setOnClickListener(view -> restartUpdateProcess());
+        permissionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void onClick(View v) {
+                requestInstallPackagesPermission();
+                permissionButton.setText(getString(R.string.recheck_permission_button_text));
+                permissionButton.setOnClickListener(view1 -> {
+                    manuallyRecheckedInstallPermission = true;
+                    runOnUiThread(UpdateActivity.this::checkInstallPackagePermissionRunnable);
+                });
+            }
+        });
 
-        accountToken = "redacted";
-//        accountToken = getIntent().getStringExtra(EXTRA_ACCOUNT_TOKEN);
+        accountToken = getIntent().getStringExtra(EXTRA_ACCOUNT_TOKEN);
 
         new Thread(() -> {
             try {
@@ -143,12 +157,16 @@ public class UpdateActivity extends AppCompatActivity {
                     return;
                 }
 
-                runOnUiThread(this::showDownloadStep);
+                String appName = packageInfo.getAppName();
+                runOnUiThread(() -> showDownloadStep(appName));
                 boolean downloaded = downloadApk(packageName);
                 if (!downloaded) return;
 
-                runOnUiThread(checkInstallPackagePermissionRunnable);
-                runOnUiThread(this::showInstallationStep);
+                runOnUiThread(() -> {
+                    if (!checkInstallPackagePermissionRunnable()) {
+                        showInstallationStep(appName);
+                    }
+                });
             } else {
                 launchPraxtourMainApp();
             }
@@ -251,37 +269,30 @@ public class UpdateActivity extends AppCompatActivity {
         }
     }
 
-    private final Runnable checkInstallPackagePermissionRunnable = new Runnable() {
-        boolean manuallyRechecked = false;
-        @Override
-        public void run() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
-                if (manuallyRechecked) {
-                    descriptionTextView.setText(getString(R.string.no_permission_after_interaction));
-                } else {
-                    showPermissionRequiredPage();
-                }
-
-                permissionButton.setOnClickListener(view -> {
-                    requestInstallPackagesPermission();
-                    permissionButton.setText(getString(R.string.recheck_permission_button_text));
-                    permissionButton.setOnClickListener(view1 -> {
-                        manuallyRechecked = true;
-                        runOnUiThread(this);
-                    });
-                });
+    private boolean checkInstallPackagePermissionRunnable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
+            if (manuallyRecheckedInstallPermission) {
+                descriptionTextView.setText(getString(R.string.no_permission_after_interaction));
+                return false;
+            } else {
+                showPermissionRequiredPage();
+                return true;
             }
         }
-    };
 
-    private void showDownloadStep() {
+        return false;
+    }
+
+    private void showDownloadStep(String appName) {
+        titleTextView.setText(String.format("Downloading %s", appName));
         descriptionTextView.setText(getString(R.string.app_update_status_download_text));
         descriptionTextView.setVisibility(View.VISIBLE);
         permissionButton.setVisibility(View.GONE);
         downloadStatusProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void showInstallationStep() {
+    private void showInstallationStep(String appName) {
+        titleTextView.setText(String.format("%s downloaded", appName));
         descriptionTextView.setVisibility(View.GONE);
         permissionButton.setVisibility(View.GONE);
         statusTextView.setText(getString(R.string.app_update_status_install_text));
@@ -309,11 +320,15 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void launchPraxtourMainApp() {
         Intent launch = getPackageManager().getLaunchIntentForPackage(PRAXTOUR_APP_PACKAGE_NAME);
+        boolean isFirstLogin = getIntent().getBooleanExtra(EXTRA_FIRST_LOGIN, true);
         if (launch != null) {
             launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP
                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            launch.putExtra(EXTRA_ACCOUNT_TOKEN, accountToken);
+            launch.putExtra(EXTRA_FIRST_LOGIN, isFirstLogin);
             startActivity(launch);
+            finishAffinity();
         }
     }
 

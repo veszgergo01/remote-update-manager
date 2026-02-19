@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
             android:text="@string/install_update_button_text"
             android:visibility="gone" />
 
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
             android:text="@string/open_praxtour_app_button_text"
             android:visibility="gone" />
 
@@ -119,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
             android:text="@string/grant_permission_button_text"
             android:visibility="gone" />
 
@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/AppTheme.DefaultTrainingButtonBlueBorders"
+            style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
             android:text="@string/restart_process_button_text"
             android:visibility="gone" />
     </LinearLayout>
