@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/login"
+    android:layout_gravity="center"
+    tools:context=".ui.LoginActivity">
+
+    <LinearLayout
+        android:background="@drawable/imagebutton_blue_border"
+        android:backgroundTint="@color/black_overlay"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/page_title_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/login_page_title" />
+
+        <TextView
+            android:id="@+id/login_enter_username_textview"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/enter_username_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/login_enter_username_input"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/enter_username_hint"
+            android:textColorHint="@color/gray"
+            android:imeOptions="actionSend|flagNoExtractUi"
+            android:imeActionLabel="@string/next_step_button_text"
+            android:background="#FFFFFF"
+            android:textColor="@color/black"
+            android:nextFocusDown="@id/next_button"
+            style="@style/AppTheme.FocusableView" />
+
+        <TextView
+            android:id="@+id/login_enter_password_title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/enter_password_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/login_enter_password_input"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/enter_password_hint"
+            android:textColorHint="@color/gray"
+            android:imeOptions="actionSend|flagNoExtractUi"
+            android:imeActionLabel="@string/next_step_button_text"
+            android:background="#FFFFFF"
+            android:textColor="@color/black"
+            style="@style/AppTheme.FocusableView"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/login_failed_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_failed_description"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp">
+
+            <Button
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/previous_step_button_text"
+                android:padding="10dp"
+                style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next_step_button_text"
+                android:padding="10dp"
+                style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders" />
+
+            <Button
+                android:id="@+id/retry_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/retry_button_text"
+                android:padding="10dp"
+                style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/server_status_overlay"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:text="Server Online:" />
+
+            <ImageView
+                android:id="@+id/server_status_indicator"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/green_tick" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+    android:id="@+id/information_dialog_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@android:color/black"
+    android:layout_gravity="center"
+    android:text="@string/login_information_dialog"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

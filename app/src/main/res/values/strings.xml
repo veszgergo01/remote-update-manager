@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Praxtour Update Manager</string>
     <string name="app_update_title">App update available!</string>
+    <string name="login_page_title">Login</string>
+    <string name="login_failed_title">Login failed</string>
+    <string name="login_failed_description">Username and/or password are wrong.\nPlease try again.</string>
+    <string name="retry_button_text">Retry</string>
     <string name="app_update_description">Your current app version is <b>%s</b>, however an update is available to version <b>%s</b>.</string>
     <string name="app_update_status_download_text">The update is now being downloaded, please <b>do not</b> turn off your device.</string>
     <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation page.\nOnce the installation has completed, you will be redirected to the app.</string>
@@ -15,4 +19,11 @@
     <string name="grant_permission_button_text">Allow</string>
     <string name="recheck_permission_button_text">Check</string>
     <string name="no_permission_after_interaction">It seems you have not granted the update manager the permission to install packages on this device. You will not be able to continue using Praxtour while the update is not installed.\nIf you believe that you have granted the necessary permissions and are seeing this message, please contact us at service@praxtour.com.</string>
+    <string name="enter_username_text">Enter username</string>
+    <string name="enter_username_hint">Username</string>
+    <string name="enter_password_text">Enter password</string>
+    <string name="enter_password_hint">Password</string>
+    <string name="previous_step_button_text">Previous</string>
+    <string name="next_step_button_text">Next</string>
+    <string name="login_information_dialog">For more information go to our website <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
 </resources>

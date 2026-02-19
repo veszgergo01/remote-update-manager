@@ -26,4 +26,9 @@ public class PraxConstants {
         public static final String PRAXCLOUD_API_URL = PRAXCLOUD_API_URL_TEST;
         public static final String PRAXCLOUD_MEDIA_URL = "https://media.praxcloud.eu";
     }
+
+    public static class Connectivity {
+        public static final String NO_WIFI_PERMISSION = "com.videostreamtest.NO_WIFI_PERMISSION";
+        public static final String WIFI_NOT_CONNECTED = "com.videostreamtest.WIFI_NOT_CONNECTED";
+    }
 }
