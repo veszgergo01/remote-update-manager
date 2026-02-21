@@ -1,5 +1,7 @@
 package com.remoteupdatemanager.download;
 
+import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -15,8 +17,6 @@ import java.nio.channels.ReadableByteChannel;
 public class ApkDownloader implements ProgressCallback {
     private final static String TAG = ApkDownloader.class.getSimpleName();
 
-    private static final String UPDATE_URL = "https://media.praxcloud.eu/app/";
-
     public static File download(Context context, URL updateFileUrl, long expectedSizeBytes, ProgressCallback progressCallback) {
         File cacheFolder = context.getCacheDir();
         clearUpdateFolder(cacheFolder);
@@ -31,7 +31,7 @@ public class ApkDownloader implements ProgressCallback {
         }
         if (readableByteChannel == null) return null;
 
-        File outputFile = new File(context.getCacheDir(), "downloaded-apk.apk");
+        File outputFile = new File(context.getCacheDir(), DOWNLOADED_APK_FILENAME);
         Log.d(TAG, "Greg output path: " + outputFile.getAbsolutePath());
         try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);

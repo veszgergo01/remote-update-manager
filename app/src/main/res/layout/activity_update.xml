@@ -54,15 +54,6 @@
                 android:textAlignment="center"
                 android:text="@string/landing_page_description" />
 
-            <TextView
-                android:id="@+id/status_textview"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite"
-                android:textAlignment="center"
-                android:text="@string/app_update_status_download_text"
-                android:visibility="gone" />
-
             <SeekBar
                 android:id="@+id/download_status_progressbar"
                 android:layout_width="200dp"

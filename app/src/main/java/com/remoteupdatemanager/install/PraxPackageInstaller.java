@@ -1,5 +1,7 @@
 package com.remoteupdatemanager.install;
 
+import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +14,7 @@ import java.io.OutputStream;
 
 public class PraxPackageInstaller {
     private final static String TAG = PraxPackageInstaller.class.getSimpleName();
-    public static boolean installApk(Context context, File apkFile) throws IOException {
+    public static boolean installApk(Context context) throws IOException {
         PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
         PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
                 PackageInstaller.SessionParams.MODE_FULL_INSTALL
@@ -27,6 +29,8 @@ public class PraxPackageInstaller {
             // TODO not enough disk space OR .apk file isn't there
             return false;
         }
+
+        File apkFile = new File(context.getCacheDir(), DOWNLOADED_APK_FILENAME);
 
         try (FileInputStream in = new FileInputStream(apkFile);
              OutputStream out = session.openWrite("praxtour-app.apk", 0, apkFile.length())) {

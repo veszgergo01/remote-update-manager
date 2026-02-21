@@ -28,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.remoteupdatemanager.api.PraxCloud;
-import com.remoteupdatemanager.api.entity.ApkPublicDescription;
+import com.remoteupdatemanager.api.entity.ApkDescription;
 import com.remoteupdatemanager.install.PraxPackageInstaller;
 import com.remoteupdatemanager.R;
 import com.remoteupdatemanager.download.ApkDownloader;
@@ -36,9 +36,10 @@ import com.remoteupdatemanager.download.CallbackByteChannel;
 import com.remoteupdatemanager.download.ProgressCallback;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
+import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
 import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
 import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
-import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FIRST_LOGIN;
+import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FROM_LAUNCHER;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,14 +58,12 @@ public class UpdateActivity extends AppCompatActivity {
 
     public static final String PRAXTOUR_APP_PACKAGE_NAME = "com.videostreamtest";
     private String accountToken;
-    Stack<ApkPublicDescription> packagesInfo = new Stack<>();
+    Stack<ApkDescription> packagesInfo = new Stack<>();
 
     private TextView titleTextView;
     private ProgressBar checkingForUpdatesLoadingWheel;
     private TextView descriptionTextView;
-    private TextView statusTextView;
     private Button startInstallationButton;
-    private Button openPraxtourButton;
     private Button permissionButton;
     private Button restartProcessButton;
     private LinearLayout installationInProgressLayout;
@@ -95,7 +94,7 @@ public class UpdateActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     switch (result.getResultCode()) {
                         case Activity.RESULT_OK:
-//                            runOnUiThread(UpdateActivity.this::showInstallationStep);
+                            runOnUiThread(UpdateActivity.this::showInstallationStep);
                             break;
                         case Activity.RESULT_CANCELED:
                             // TODO show permission required page
@@ -108,6 +107,8 @@ public class UpdateActivity extends AppCompatActivity {
             }
     );
 
+    private ApkDescription currentBeingProcessed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,9 +117,7 @@ public class UpdateActivity extends AppCompatActivity {
         titleTextView = findViewById(R.id.title_textview);
         checkingForUpdatesLoadingWheel = findViewById(R.id.checking_for_updates_loading_wheel);
         descriptionTextView = findViewById(R.id.description_textview);
-        statusTextView = findViewById(R.id.status_textview);
         startInstallationButton = findViewById(R.id.start_installation_button);
-        openPraxtourButton = findViewById(R.id.open_praxtour_button);
         permissionButton = findViewById(R.id.permission_button);
         restartProcessButton = findViewById(R.id.restart_process_button);
         installationInProgressLayout = findViewById(R.id.installation_in_progress_layout);
@@ -128,18 +127,38 @@ public class UpdateActivity extends AppCompatActivity {
 
         appAccountInfoTextView.setText(String.format("Version %s", getAppVersion()));
 
-        openPraxtourButton.setOnClickListener(view -> launchPraxtourMainApp());
         restartProcessButton.setOnClickListener(view -> restartUpdateProcess());
         permissionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
+                // First press: request, change the button text
                 requestInstallPackagesPermission();
                 permissionButton.setText(getString(R.string.recheck_permission_button_text));
+
                 permissionButton.setOnClickListener(view1 -> {
+                    // Second+ press: different screen to emphasize request to user
                     manuallyRecheckedInstallPermission = true;
-                    runOnUiThread(UpdateActivity.this::checkInstallPackagePermissionRunnable);
+                    runOnUiThread(() -> {
+                        if (appHasInstallPackagePermission()) {
+                            showInstallationStep();
+                        } else {
+                            requestInstallPackagesPermission();
+                        }
+                    });
                 });
+            }
+        });
+
+        startInstallationButton.setOnClickListener(view -> {
+            try {
+                startInstallationButton.setVisibility(View.GONE);
+                installationInProgressLayout.setVisibility(View.VISIBLE);
+                boolean result = PraxPackageInstaller.installApk(this);
+                if (!result) throw new IOException("Unknown error:(");
+            } catch (IOException e) {
+                runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL));
+                Log.e(TAG, "Greg uh-oh " + e);
             }
         });
 
@@ -160,21 +179,25 @@ public class UpdateActivity extends AppCompatActivity {
     private void processNextPackage() {
         new Thread(() -> {
             if (!packagesInfo.isEmpty()) {
-                ApkPublicDescription packageInfo = packagesInfo.pop();
-                String packageName = packageInfo.getPackageName();
-                if (packageName.equals(getPackageName()) || !packageShouldBeProcessed(packageInfo)) {
+                currentBeingProcessed = packagesInfo.pop();
+                String packageName = currentBeingProcessed.getPackageName();
+                if (packageName.equals(getPackageName()) || !packageShouldBeProcessed(currentBeingProcessed)) {
                     processNextPackage();
                     return;
                 }
 
-                String appName = packageInfo.getAppName();
-                runOnUiThread(() -> showDownloadStep(appName));
-                boolean downloaded = downloadApk(packageName);
-                if (!downloaded) return;
+                if (!isApkAvailableLocally()) {
+                    runOnUiThread(this::showDownloadStep);
+                    boolean downloaded = downloadApk(packageName);
+                    if (!downloaded) {
+                        displayErrorEncountered(ErrorStep.DOWNLOAD);
+                        return;
+                    }
+                }
 
                 runOnUiThread(() -> {
-                    if (!checkInstallPackagePermissionRunnable()) {
-                        showInstallationStep(appName);
+                    if (appHasInstallPackagePermission()) {
+                        showInstallationStep();
                     }
                 });
             } else {
@@ -183,7 +206,7 @@ public class UpdateActivity extends AppCompatActivity {
         }).start();
     }
 
-    private boolean packageShouldBeProcessed(ApkPublicDescription packageInfo) {
+    private boolean packageShouldBeProcessed(ApkDescription packageInfo) {
         PackageInfo onDevicePackageInfo;
 
         try {
@@ -218,6 +241,10 @@ public class UpdateActivity extends AppCompatActivity {
         return false;
     }
 
+    private boolean isApkAvailableLocally() {
+        return new File(getCacheDir(), DOWNLOADED_APK_FILENAME).exists();
+    }
+
     private boolean downloadApk(String packageName) {
         URL updateFileUrl = fetchUpdateLink(packageName);
         File apkFile = ApkDownloader.download(this, updateFileUrl, APK_EXPECTED_FILE_SIZE, new ProgressCallback() {
@@ -234,22 +261,10 @@ public class UpdateActivity extends AppCompatActivity {
         }
         Log.d(TAG, "Greg file is ok: " + apkFile.getAbsolutePath());
 
-        startInstallationButton.setOnClickListener(view -> {
-            try {
-                startInstallationButton.setVisibility(View.GONE);
-                installationInProgressLayout.setVisibility(View.VISIBLE);
-                boolean result = PraxPackageInstaller.installApk(this, apkFile);
-                if (!result) throw new IOException("Unknown error:(");
-            } catch (IOException e) {
-                runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL));
-                Log.e(TAG, "Greg uh-oh " + e);
-            }
-        });
-
         return true;
     }
 
-    private List<ApkPublicDescription> fetchAllPackagePublicInfo() {
+    private List<ApkDescription> fetchAllPackagePublicInfo() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(PRAXCLOUD_API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -258,7 +273,7 @@ public class UpdateActivity extends AppCompatActivity {
         PraxCloud praxCloud = retrofit.create(PraxCloud.class);
 
         try {
-            return praxCloud.getAllPackagesPublicInfo().execute().body();
+            return praxCloud.getAllPackagesPublicInfo(accountToken).execute().body();
         } catch (IOException e) {
             throw new RuntimeException("Problem while getting package names");
         }
@@ -279,21 +294,22 @@ public class UpdateActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkInstallPackagePermissionRunnable() {
+    /**
+     * @return true if permission is already granted or device is running an OS lower than Android 8,
+     * false otherwise.
+     */
+    private boolean appHasInstallPackagePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
-            if (manuallyRecheckedInstallPermission) {
-                descriptionTextView.setText(getString(R.string.no_permission_after_interaction));
-                return false;
-            } else {
-                showPermissionRequiredPage();
-                return true;
-            }
+            showPermissionRequiredPage();
+            return false;
         }
 
-        return false;
+        return true;
     }
 
-    private void showDownloadStep(String appName) {
+    private void showDownloadStep() {
+        String appName = currentBeingProcessed.getAppName();
+
         titleTextView.setText(String.format("Downloading %s", appName));
         descriptionTextView.setText(getString(R.string.app_update_status_download_text));
         descriptionTextView.setVisibility(View.VISIBLE);
@@ -301,22 +317,28 @@ public class UpdateActivity extends AppCompatActivity {
         downloadStatusProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void showInstallationStep(String appName) {
-        titleTextView.setText(String.format("%s downloaded", appName));
-        descriptionTextView.setVisibility(View.GONE);
+    private void showInstallationStep() {
+        String appName = currentBeingProcessed.getAppName();
+
+        titleTextView.setText(String.format("Install %s", appName));
+        descriptionTextView.setText(getString(R.string.app_update_status_install_text));
         permissionButton.setVisibility(View.GONE);
-        statusTextView.setText(getString(R.string.app_update_status_install_text));
-        statusTextView.setVisibility(View.VISIBLE);
         startInstallationButton.setVisibility(View.VISIBLE);
         startInstallationButton.requestFocus();
     }
 
     private void showPermissionRequiredPage() {
+        String appName = currentBeingProcessed.getAppName();
+
         titleTextView.setText(getString(R.string.permission_required_title));
-        descriptionTextView.setText(getString(R.string.permission_required_description));
-        statusTextView.setVisibility(View.GONE);
+        if (manuallyRecheckedInstallPermission) {
+            descriptionTextView.setText(String.format(getString(R.string.no_permission_after_interaction), appName, getPackageName()));
+        } else {
+            descriptionTextView.setText(String.format(getString(R.string.permission_required_description), getPackageName(), appName));
+        }
         permissionButton.setText(getString(R.string.grant_permission_button_text));
         permissionButton.setVisibility(View.VISIBLE);
+        permissionButton.requestFocus();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -330,13 +352,12 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void launchPraxtourMainApp() {
         Intent launch = getPackageManager().getLaunchIntentForPackage(PRAXTOUR_APP_PACKAGE_NAME);
-        boolean isFirstLogin = getIntent().getBooleanExtra(EXTRA_FIRST_LOGIN, true);
         if (launch != null) {
             launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP
                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            launch.putExtra(EXTRA_FROM_LAUNCHER, true);
             launch.putExtra(EXTRA_ACCOUNT_TOKEN, accountToken);
-            launch.putExtra(EXTRA_FIRST_LOGIN, isFirstLogin);
             startActivity(launch);
             finishAffinity();
         }
@@ -368,7 +389,6 @@ public class UpdateActivity extends AppCompatActivity {
 
         titleTextView.setText(titleText);
         descriptionTextView.setText(titleDescription);
-        statusTextView.setVisibility(View.GONE);
         restartProcessButton.setVisibility(View.VISIBLE);
     }
 

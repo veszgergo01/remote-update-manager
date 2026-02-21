@@ -2,7 +2,6 @@ package com.remoteupdatemanager.ui;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
 import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
-import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FIRST_LOGIN;
 
 import android.content.Context;
 import android.content.Intent;
@@ -89,18 +88,19 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString(EXTRA_ACCOUNT_TOKEN, apikey);
                         editor.apply();
 
-                        openInstallerActivity(true);
+                        openInstallerActivity();
                     }).start();
                     break;
             }
         });
 
         if (checkForSavedApikey()) {
-            openInstallerActivity(false);
+            openInstallerActivity();
         }
 
         previousButton.setOnClickListener(v -> showEnterUsernamePage());
 
+        // FIXME show loading until this is confirmed
         new Thread(() -> {
             if (isServerOnline()) {
                 runOnUiThread(() -> serverStatusImageView.setImageResource(R.drawable.green_tick));
@@ -110,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                     usernameInput.setEnabled(false);
                     // TODO implement retry connection button
                 });
-                return;
             }
         }).start();
     }
@@ -182,10 +181,9 @@ public class LoginActivity extends AppCompatActivity {
         return !apikey.isBlank();
     }
 
-    private void openInstallerActivity(boolean isFirstLogin) {
+    private void openInstallerActivity() {
         Intent installerIntent = new Intent(LoginActivity.this, UpdateActivity.class);
         installerIntent.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
-        installerIntent.putExtra(EXTRA_FIRST_LOGIN, isFirstLogin);
         startActivity(installerIntent);
         finish();
     }

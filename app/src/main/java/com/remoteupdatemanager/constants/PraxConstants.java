@@ -2,9 +2,14 @@ package com.remoteupdatemanager.constants;
 
 public class PraxConstants {
     public static final String EXTRA_ACCOUNT_TOKEN = "com.videostreamtest.EXTRA_ACCOUNT_TOKEN";
-    public static final String EXTRA_FIRST_LOGIN = "com.videostreamtest.EXTRA_FIRST_LOGIN";
+    /**
+     * Only Praxtour Launcher is supposed to send an intent extra with this name, set to true.
+     */
+    public static final String EXTRA_FROM_LAUNCHER = "com.videostreamtest.EXTRA_FROM_LAUNCHER";
+
     public static class ApkUpdate {
         public static final String EVENT_INSTALL_COMPLETE = "com.videostreamtest.EVENT_INSTALL_COMPLETE";
+        public static final String DOWNLOADED_APK_FILENAME = "downloaded-apk.apk";
     }
 
     public static class Api {
