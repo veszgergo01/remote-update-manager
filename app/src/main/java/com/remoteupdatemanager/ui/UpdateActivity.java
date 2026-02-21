@@ -76,6 +76,16 @@ public class UpdateActivity extends AppCompatActivity {
             processNextPackage();
         }
     };
+    /**
+     * TLDR; A different text is displayed after the user rechecks for the {@code Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES}
+     * permission, but they did not grant it.
+     * <p>
+     * At a point the user might be asked to grant {@code Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES}
+     * permission. Since the permission is toggleable and there is no direct "result" that
+     * we could register for, the user manually has to recheck the permission. When this happens,
+     * and the user did NOT grant the permission (did not toggle), a different text is displayed
+     * to emphasize it. For that, this boolean is used.
+     *   */
     boolean manuallyRecheckedInstallPermission = false;
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
