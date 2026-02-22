@@ -36,7 +36,6 @@ import com.remoteupdatemanager.download.CallbackByteChannel;
 import com.remoteupdatemanager.download.ProgressCallback;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
-import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
 import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
 import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
 import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FROM_LAUNCHER;
@@ -154,7 +153,7 @@ public class UpdateActivity extends AppCompatActivity {
             try {
                 startInstallationButton.setVisibility(View.GONE);
                 installationInProgressLayout.setVisibility(View.VISIBLE);
-                boolean result = PraxPackageInstaller.installApk(this);
+                boolean result = PraxPackageInstaller.installApk(this, currentBeingProcessed.getApkFilepath());
                 if (!result) throw new IOException("Unknown error:(");
             } catch (IOException e) {
                 runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL));
@@ -170,7 +169,7 @@ public class UpdateActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 throw new RuntimeException("Unexpected interrupt", e);
             }
-            packagesInfo.addAll(fetchAllPackagePublicInfo());
+            packagesInfo.addAll(fetchAllPackageInfo());
             runOnUiThread(() -> checkingForUpdatesLoadingWheel.setVisibility(View.GONE));
             processNextPackage();
         }).start();
@@ -188,7 +187,7 @@ public class UpdateActivity extends AppCompatActivity {
 
                 if (!isApkAvailableLocally()) {
                     runOnUiThread(this::showDownloadStep);
-                    boolean downloaded = downloadApk(packageName);
+                    boolean downloaded = downloadApk();
                     if (!downloaded) {
                         displayErrorEncountered(ErrorStep.DOWNLOAD);
                         return;
@@ -242,12 +241,11 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private boolean isApkAvailableLocally() {
-        return new File(getCacheDir(), DOWNLOADED_APK_FILENAME).exists();
+        return new File(getCacheDir(), currentBeingProcessed.getVersion()).exists();
     }
 
-    private boolean downloadApk(String packageName) {
-        URL updateFileUrl = fetchUpdateLink(packageName);
-        File apkFile = ApkDownloader.download(this, updateFileUrl, APK_EXPECTED_FILE_SIZE, new ProgressCallback() {
+    private boolean downloadApk() {
+        File apkFile = ApkDownloader.download(this, currentBeingProcessed.getApkFilepath(), currentBeingProcessed.getFileSizeMb() * 1024 * 1024L, new ProgressCallback() {
             @Override
             public void callback(CallbackByteChannel rbc, double progress) {
                 downloadStatusProgressBar.setProgress((int) progress);
@@ -264,7 +262,7 @@ public class UpdateActivity extends AppCompatActivity {
         return true;
     }
 
-    private List<ApkDescription> fetchAllPackagePublicInfo() {
+    private List<ApkDescription> fetchAllPackageInfo() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(PRAXCLOUD_API_URL)
                 .addConverterFactory(GsonConverterFactory.create())

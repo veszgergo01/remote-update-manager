@@ -5,6 +5,8 @@ import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOAD
 import android.content.Context;
 import android.util.Log;
 
+import com.remoteupdatemanager.api.helpers.UpdateHelper;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,21 +19,24 @@ import java.nio.channels.ReadableByteChannel;
 public class ApkDownloader implements ProgressCallback {
     private final static String TAG = ApkDownloader.class.getSimpleName();
 
-    public static File download(Context context, URL updateFileUrl, long expectedSizeBytes, ProgressCallback progressCallback) {
+    public static File download(Context context, String updateFileRemotePath, long expectedSizeBytes, ProgressCallback progressCallback) {
         File cacheFolder = context.getCacheDir();
         clearUpdateFolder(cacheFolder);
 
-        ReadableByteChannel readableByteChannel = null;
+        URL updateFileUrl;
+        ReadableByteChannel readableByteChannel;
         InputStream inputStream;
         try {
+            updateFileUrl = new URL(updateFileRemotePath);
             inputStream = updateFileUrl.openStream();
             readableByteChannel = new CallbackByteChannel(Channels.newChannel(inputStream), expectedSizeBytes, progressCallback);
         } catch (IOException e) {
             Log.e(TAG, "Error while accessing URL for APK update " + e);
+            return null;
         }
-        if (readableByteChannel == null) return null;
 
-        File outputFile = new File(context.getCacheDir(), DOWNLOADED_APK_FILENAME);
+        String filename = UpdateHelper.extractFileName(updateFileRemotePath);
+        File outputFile = new File(context.getCacheDir(), filename);
         Log.d(TAG, "Greg output path: " + outputFile.getAbsolutePath());
         try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);

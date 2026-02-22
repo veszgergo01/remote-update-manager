@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 
+import com.remoteupdatemanager.api.helpers.UpdateHelper;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.io.OutputStream;
 
 public class PraxPackageInstaller {
     private final static String TAG = PraxPackageInstaller.class.getSimpleName();
-    public static boolean installApk(Context context) throws IOException {
+    public static boolean installApk(Context context, String updateFileRemotePath) throws IOException {
         PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
         PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
                 PackageInstaller.SessionParams.MODE_FULL_INSTALL
@@ -30,7 +32,8 @@ public class PraxPackageInstaller {
             return false;
         }
 
-        File apkFile = new File(context.getCacheDir(), DOWNLOADED_APK_FILENAME);
+        String filename = UpdateHelper.extractFileName(updateFileRemotePath);
+        File apkFile = new File(context.getCacheDir(), filename);
 
         try (FileInputStream in = new FileInputStream(apkFile);
              OutputStream out = session.openWrite("praxtour-app.apk", 0, apkFile.length())) {
