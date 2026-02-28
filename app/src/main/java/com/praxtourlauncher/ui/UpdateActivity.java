@@ -311,7 +311,7 @@ public class UpdateActivity extends AppCompatActivity {
         String appName = currentBeingProcessed.getAppName();
 
         titleTextView.setText(String.format("Downloading %s", appName));
-        descriptionTextView.setText(getString(R.string.app_update_status_download_text));
+        descriptionTextView.setText(String.format(getString(R.string.app_update_status_download_text), currentBeingProcessed.getVersion(), currentBeingProcessed.getAppName()));
         descriptionTextView.setVisibility(View.VISIBLE);
         permissionButton.setVisibility(View.GONE);
         downloadStatusProgressBar.setVisibility(View.VISIBLE);
