@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+apply from: 'versionCode.gradle'
+
 android {
     namespace 'com.praxtourlauncher'
     compileSdk 34
