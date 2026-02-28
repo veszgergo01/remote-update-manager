@@ -22,9 +22,12 @@ import com.praxtourlauncher.R;
 import com.praxtourlauncher.api.PraxCloud;
 import com.praxtourlauncher.api.entity.ApiKey;
 import com.praxtourlauncher.api.entity.LoginUser;
+import com.praxtourlauncher.api.entity.Product;
 
 import java.io.IOException;
+import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -82,7 +85,12 @@ public class LoginActivity extends AppCompatActivity {
                     new Thread(() -> {
                         apikey = authenticate(usernameInput.getText().toString(), passwordInput.getText().toString());
                         if (apikey == null) {
-                            runOnUiThread(this::showFailedLoginPage);
+                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.login_failed_description)));
+                            return;
+                        }
+
+                        if (!userHasExistingProducts()) {
+                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.no_active_products_description)));
                             return;
                         }
 
@@ -140,6 +148,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private boolean userHasExistingProducts() {
+        Call<List<Product>> allAccountProducts = praxCloud.getActiveProducts(apikey);
+        List<Product> activeProducts;
+        try {
+            activeProducts = allAccountProducts.execute().body();
+        } catch (IOException ioException) {
+            Log.e(TAG, ioException.toString());
+            return false;
+        }
+
+        return activeProducts != null && !activeProducts.isEmpty();
+    }
+
     private void showEnterUsernamePage() {
         usernameInput.setEnabled(true);
         usernameInput.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -163,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
         step = Step.ENTER_PASSWORD;
     }
 
-    private void showFailedLoginPage() {
+    private void showFailedLoginPage(final String reason) {
         pageTitleTextView.setText(getString(R.string.login_failed_title));
         pageTitleTextView.setTextColor(getColor(R.color.red));
         usernameInput.setVisibility(View.GONE);
@@ -175,12 +196,10 @@ public class LoginActivity extends AppCompatActivity {
 
         retryButton.setVisibility(View.VISIBLE);
         retryButton.requestFocus();
+        loginFailedTextView.setText(reason);
         loginFailedTextView.setVisibility(View.VISIBLE);
 
-        retryButton.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, LoginActivity.class));
-            finish();
-        });
+        retryButton.setOnClickListener(v -> restartLoginActivity());
     }
 
     @SuppressLint("ApplySharedPref")
@@ -200,6 +219,11 @@ public class LoginActivity extends AppCompatActivity {
         Intent installerIntent = new Intent(LoginActivity.this, UpdateActivity.class);
         installerIntent.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
         startActivity(installerIntent);
+        finish();
+    }
+
+    private void restartLoginActivity() {
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 }

@@ -3,6 +3,7 @@ package com.praxtourlauncher.api;
 import com.praxtourlauncher.api.entity.ApiKey;
 import com.praxtourlauncher.api.entity.ApkDescription;
 import com.praxtourlauncher.api.entity.LoginUser;
+import com.praxtourlauncher.api.entity.Product;
 import com.praxtourlauncher.api.entity.ServerStatus;
 
 import java.net.URL;
@@ -32,4 +33,8 @@ public interface PraxCloud {
     //AUTHENTICATION
     @POST("/api/login")
     Call<ApiKey> authenticateUser(@Body LoginUser loginUser);
+
+    //PRODUCTS
+    @GET("/api/users/current/subscriptions")
+    Call<List<Product>> getActiveProducts(@Header("api-key") String accountToken);
 }
