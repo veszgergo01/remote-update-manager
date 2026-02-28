@@ -37,8 +37,8 @@ import com.remoteupdatemanager.download.ProgressCallback;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
 import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
-import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
-import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_FROM_LAUNCHER;
+import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
+import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 
 import java.io.File;
 import java.io.IOException;

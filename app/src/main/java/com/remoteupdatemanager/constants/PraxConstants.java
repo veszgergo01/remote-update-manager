@@ -1,11 +1,14 @@
 package com.remoteupdatemanager.constants;
 
 public class PraxConstants {
-    public static final String EXTRA_ACCOUNT_TOKEN = "com.videostreamtest.EXTRA_ACCOUNT_TOKEN";
-    /**
-     * Only Praxtour Launcher is supposed to send an intent extra with this name, set to true.
-     */
-    public static final String EXTRA_FROM_LAUNCHER = "com.videostreamtest.EXTRA_FROM_LAUNCHER";
+    public static class IntentExtra {
+        public static final String EXTRA_ACCOUNT_TOKEN = "com.videostreamtest.EXTRA_ACCOUNT_TOKEN";
+        /**
+         * Only Praxtour Launcher is supposed to send an intent extra with this name, set to true.
+         */
+        public static final String EXTRA_FROM_LAUNCHER = "com.videostreamtest.EXTRA_FROM_LAUNCHER";
+        public static final String EXTRA_LOGOUT = "com.videostreamtest.EXTRA_LOGOUT";
+    }
 
     public static class ApkUpdate {
         public static final String EVENT_INSTALL_COMPLETE = "com.videostreamtest.EVENT_INSTALL_COMPLETE";
@@ -29,7 +32,7 @@ public class PraxConstants {
          */
         public static final String PRAXCLOUD_API_URL_TEST = "http://10.0.2.2:8081";
 
-        public static final String PRAXCLOUD_API_URL = PRAXCLOUD_API_URL_TEST;
+        public static final String PRAXCLOUD_API_URL = PRAXCLOUD_API_URL_PROD;
         public static final String PRAXCLOUD_MEDIA_URL = "https://media.praxcloud.eu";
     }
 

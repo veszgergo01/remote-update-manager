@@ -1,8 +1,10 @@
 package com.remoteupdatemanager.ui;
 
 import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
-import static com.remoteupdatemanager.constants.PraxConstants.EXTRA_ACCOUNT_TOKEN;
+import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
+import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -94,6 +96,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        Intent incomingIntent = getIntent();
+        boolean logout = incomingIntent.getBooleanExtra(EXTRA_LOGOUT, false);
+        if (logout) {
+            clearSavedCredentials();
+        }
+
         if (checkForSavedApikey()) {
             openInstallerActivity();
         }
@@ -173,6 +181,13 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, LoginActivity.class));
             finish();
         });
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private void clearSavedCredentials() {
+        SharedPreferences.Editor editor = getSharedPreferences("app", Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.commit(); // commit, because we immediately need the value saved
     }
 
     private boolean checkForSavedApikey() {
