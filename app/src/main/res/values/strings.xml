@@ -1,22 +1,21 @@
 <resources>
-    <string name="app_name">Praxtour Launcher</string>
-    <string name="app_update_title">App update available!</string>
+    <string name="app_name" translatable="false">Praxtour Launcher</string>
+    <string name="app_update_title">Update available!</string>
     <string name="login_page_title">Login</string>
     <string name="login_failed_title">Login failed</string>
     <string name="login_failed_description">Username and/or password are wrong.\nPlease try again.</string>
+    <string name="no_active_products_description">There are no active product subscriptions present.\nPlease register for any of our products.</string>
     <string name="retry_button_text">Retry</string>
-    <string name="app_update_description">Your current app version is <b>%s</b>, however an update is available to version <b>%s</b>.</string>
-    <string name="app_update_status_download_text">The update is now being downloaded, please <b>do not</b> turn off your device.</string>
-    <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation page.\nOnce the installation has completed, you will be redirected to the app.</string>
+    <!-- 1st param: The version of the app being downloaded. 2nd param: The name of the app being downloaded -->
+    <string name="app_update_status_download_text">Version %s of %s is now being downloaded, please <b>do not</b> turn off your device.</string>
+    <string name="app_update_status_install_text">Download finished. By pressing the button below, you will be redirected to the installation page. Once the installation has completed, you will be redirected to the app.</string>
     <string name="install_update_button_text">Install</string>
     <string name="install_in_progress_text">Installing…</string>
     <string name="landing_page_title">Checking for updates…</string>
     <string name="landing_page_description">If an update is detected by the system, it will be automatically downloaded.</string>
-    <string name="open_praxtour_app_button_text">Open app</string>
-    <string name="restart_process_button_text">Retry</string>
     <string name="permission_required_title">Action needed</string>
     <!-- 1st param: The current package being installed. 2nd param: The app name of this app (update manager). -->
-    <string name="permission_required_description">In order to install the newest version of %s, please allow %s to install packages on this device.\n\nAfter pressing the button below, the system will ask you to toggle that permission. Once it is ON, you may need to press the &#9664; symbol to return to this screen.</string>
+    <string name="permission_required_description">In order to install the newest version of %s, please allow %s to install packages on this device.  After pressing the button below, the system will ask you to toggle that permission. Once it is ON, you may need to press the &#9664; symbol to return to this screen.</string>
     <string name="grant_permission_button_text">Allow</string>
     <string name="recheck_permission_button_text">Check</string>
     <!-- 1st param: The app name of this app (update manager). 2nd param: The current package being installed. -->
@@ -27,5 +26,5 @@
     <string name="enter_password_hint">Password</string>
     <string name="previous_step_button_text">Previous</string>
     <string name="next_step_button_text">Next</string>
-    <string name="login_information_dialog">For more information go to our website <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+    <string name="login_information_dialog">For more information go to our website: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Praxtour Launcher</string>
+    <string name="app_update_title">Mise à jour disponible</string>
+    <string name="login_page_title">Se connecter</string>
+    <string name="login_failed_title">Échec de la connexion</string>
+    <string name="login_failed_description">Le nom d\'utilisateur et/ou le mot de passe sont erronés. Réessayer.</string>
+    <string name="no_active_products_description">Il n\'y a pas d\'abonnements actifs.</string>
+    <string name="retry_button_text">Refaire</string>
+    <string name="app_update_status_download_text">La version %s de %s est en cours de téléchargement, veuillez <b>ne pas</b> éteindre votre appareil.</string>
+    <string name="app_update_status_install_text">Le téléchargement est terminé. En cliquant sur le bouton ci-dessous, vous serez redirigé vers la page d\'installation. Une fois l\'installation terminée, vous serez redirigé vers l\'application.</string>
+    <string name="install_update_button_text">Installer</string>
+    <string name="install_in_progress_text">Installation...</string>
+    <string name="landing_page_title">Recherche de mises à jour…</string>
+    <string name="landing_page_description">Si le système détecte une mise à jour, celle-ci sera téléchargée automatiquement.</string>
+    <string name="permission_required_title">Action nécassaire</string>
+    <string name="permission_required_description">Pour installer la dernière version de %s, veuillez autoriser %s à installer des paquets sur cet appareil. Après avoir appuyé sur le bouton ci-dessous, le système vous demandera de confirmer ou d\'infirmer cette autorisation. Une fois activée, vous devrez peut-être appuyer sur le symbole &#9664; pour revenir à cet écran.</string>
+    <string name="grant_permission_button_text">Permettre</string>
+    <string name="recheck_permission_button_text">Vérifier</string>
+    <string name="no_permission_after_interaction">Il semble que vous n\'ayez pas autorisé %s à installer des paquets sur cet appareil. Vous ne pourrez pas utiliser %s tant que la mise à jour n\'est pas installée. Si vous pensez avoir accordé les autorisations nécessaires et que ce message s\'affiche, veuillez nous contacter à l\'adresse service@praxtour.com.</string>
+    <string name="enter_username_text">Saisissez votre nom d\'utilisateur</string>
+    <string name="enter_username_hint">Nom d\'utilisateur</string>
+    <string name="enter_password_text">Saisissez le mot de passe</string>
+    <string name="enter_password_hint">Mot de passe</string>
+    <string name="previous_step_button_text">Dernier</string>
+    <string name="next_step_button_text">Prochain</string>
+    <string name="login_information_dialog">Pour plus d\'informations, consultez notre site web: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+</resources>

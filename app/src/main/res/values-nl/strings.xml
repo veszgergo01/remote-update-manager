@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Praxtour Launcher</string>
+    <string name="app_update_title">Update beschikbaar</string>
+    <string name="login_page_title">Inloggen</string>
+    <string name="login_failed_title">Aanmelden mislukt</string>
+    <string name="login_failed_description">Gebruikersnaam en/of wachtwoord zijn verkeerd. Probeer het nogmaals.</string>
+    <string name="no_active_products_description">Er zijn geen actieve abonnementen.</string>
+    <string name="retry_button_text">Opnieuw</string>
+    <string name="app_update_status_download_text">Versie %s van %s wordt nu gedownload, schakel uw apparaat alstublieft <b>niet</b> uit.</string>
+    <string name="app_update_status_install_text">Download voltooid. Door op de onderstaande knop te drukken, wordt u doorgestuurd naar de installatiepagina. Zodra de installatie is voltooid, wordt u doorgestuurd naar de app.</string>
+    <string name="install_update_button_text">Installeren</string>
+    <string name="install_in_progress_text">Aan het installeren...</string>
+    <string name="landing_page_title">Controleren op updates…</string>
+    <string name="landing_page_description">Als het systeem een ​​update detecteert, wordt deze automatisch gedownload.</string>
+    <string name="permission_required_title">Actie vereist</string>
+    <string name="permission_required_description">Om de nieuwste versie van %s te installeren, moet u %s toestemming geven om pakketten op dit apparaat te installeren. Nadat u op de onderstaande knop hebt gedrukt, zal het systeem u vragen om deze toestemming in of uit te schakelen. Zodra deze is ingeschakeld, moet u mogelijk op het symbool &#9664; drukken om naar dit scherm terug te keren.</string>
+    <string name="grant_permission_button_text">Toestaan</string>
+    <string name="recheck_permission_button_text">Controleren</string>
+    <string name="no_permission_after_interaction">Het lijkt erop dat u %s geen toestemming hebt gegeven om pakketten op dit apparaat te installeren. U kunt %s niet blijven gebruiken zolang de update niet is geïnstalleerd. Als u denkt dat u de benodigde machtigingen wel hebt verleend en dit bericht ziet, neem dan contact met ons op via service@praxtour.com.</string>
+    <string name="enter_username_text">Voer gebruikersnaam in</string>
+    <string name="enter_username_hint">Gebruikersnaam</string>
+    <string name="enter_password_text">Voer wachtwoord in</string>
+    <string name="enter_password_hint">Wachtwoord</string>
+    <string name="previous_step_button_text">Vorig</string>
+    <string name="next_step_button_text">Volgende</string>
+    <string name="login_information_dialog">Voor meer informatie, ga naar onze website: Pour plus d\'informations, consultez notre site web: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+</resources>

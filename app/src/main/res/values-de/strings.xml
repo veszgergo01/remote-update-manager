@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Praxtour Launcher</string>
+    <string name="app_update_title">Update verfügbar</string>
+    <string name="login_page_title">Einloggen</string>
+    <string name="login_failed_title">Einloggen fehlgeschlagen</string>
+    <string name="login_failed_description">Benutzername und/oder Passwort sind falsch. Versuchen Sie es nochmal.</string>
+    <string name="no_active_products_description">Es gibt keine aktiven Abonnements.</string>
+    <string name="retry_button_text">Wied</string>
+    <string name="app_update_status_download_text">Version %s von %s wird jetzt heruntergeladen, bitte schalten Sie Ihr Gerät <b>nicht</b> aus.</string>
+    <string name="app_update_status_install_text">Der Download ist abgeschlossen. Durch Klicken auf die Schaltfläche unten werden Sie zur Installationsseite weitergeleitet. Nach Abschluss der Installation werden Sie automatisch zur App weitergeleitet.</string>
+    <string name="install_update_button_text">Installieren</string>
+    <string name="install_in_progress_text">Installation...</string>
+    <string name="landing_page_title">Suche nach Updates…</string>
+    <string name="landing_page_description">Wenn vom System ein Update erkannt wird, wird es automatisch heruntergeladen.</string>
+    <string name="permission_required_title">Handlungsbedarf erforderlich</string>
+    <string name="permission_required_description">Um die neueste Version von %s zu installieren, erlauben Sie %s bitte, Pakete auf diesem Gerät zu installieren. Nach dem Drücken der Schaltfläche unten werden Sie vom System aufgefordert, diese Berechtigung zu aktivieren. Sobald sie aktiviert ist, müssen Sie möglicherweise das Symbol &#9664; drücken, um zu diesem Bildschirm zurückzukehren.</string>
+    <string name="grant_permission_button_text">Erlauben</string>
+    <string name="recheck_permission_button_text">Überprüfen</string>
+    <string name="no_permission_after_interaction">Sie haben %s anscheinend keine Berechtigung zur Installation von Paketen auf diesem Gerät erteilt. Sie können %s erst wieder verwenden, wenn das Update installiert ist. Falls Sie der Meinung sind, die erforderlichen Berechtigungen erteilt zu haben und diese Meldung dennoch sehen, kontaktieren Sie uns bitte unter service@praxtour.com.</string>
+    <string name="enter_username_text">Benutzernamen eingeben</string>
+    <string name="enter_username_hint">Benutzernam</string>
+    <string name="enter_password_text">Passwort eingeben</string>
+    <string name="enter_password_hint">Passwort</string>
+    <string name="previous_step_button_text">Vorherige</string>
+    <string name="next_step_button_text">Nächste</string>
+    <string name="login_information_dialog">Weitere Informationen finden Sie auf unserer Website: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+</resources>
