@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.startonboot;
+package com.praxtourlauncher.startonboot;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,8 +12,8 @@ import android.os.Looper;
 
 import androidx.core.app.NotificationCompat;
 
-import com.remoteupdatemanager.R;
-import com.remoteupdatemanager.ui.LoginActivity;
+import com.praxtourlauncher.R;
+import com.praxtourlauncher.ui.LoginActivity;
 
 public class BootStartupService extends Service {
     @Override

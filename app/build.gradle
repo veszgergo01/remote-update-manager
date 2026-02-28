@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.remoteupdatemanager'
+    namespace 'com.praxtourlauncher'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.remoteupdatemanager"
+        applicationId "com.praxtourlauncher"
         minSdk 24
         targetSdk 34
         versionCode Integer.parseInt(VERSION_CODE)

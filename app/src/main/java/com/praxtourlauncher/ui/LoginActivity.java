@@ -1,8 +1,8 @@
-package com.remoteupdatemanager.ui;
+package com.praxtourlauncher.ui;
 
-import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
-import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
-import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
+import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
+import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
+import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,10 +18,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.remoteupdatemanager.R;
-import com.remoteupdatemanager.api.PraxCloud;
-import com.remoteupdatemanager.api.entity.ApiKey;
-import com.remoteupdatemanager.api.entity.LoginUser;
+import com.praxtourlauncher.R;
+import com.praxtourlauncher.api.PraxCloud;
+import com.praxtourlauncher.api.entity.ApiKey;
+import com.praxtourlauncher.api.entity.LoginUser;
 
 import java.io.IOException;
 

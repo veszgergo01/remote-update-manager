@@ -1,17 +1,14 @@
-package com.remoteupdatemanager.download;
-
-import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
+package com.praxtourlauncher.download;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.remoteupdatemanager.api.helpers.UpdateHelper;
+import com.praxtourlauncher.api.helpers.UpdateHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;

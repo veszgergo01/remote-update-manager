@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.api.entity;
+package com.praxtourlauncher.api.entity;
 
 public class ApkDescription {
     private Integer id;

@@ -1,9 +1,9 @@
-package com.remoteupdatemanager.api;
+package com.praxtourlauncher.api;
 
-import com.remoteupdatemanager.api.entity.ApiKey;
-import com.remoteupdatemanager.api.entity.ApkDescription;
-import com.remoteupdatemanager.api.entity.LoginUser;
-import com.remoteupdatemanager.api.entity.ServerStatus;
+import com.praxtourlauncher.api.entity.ApiKey;
+import com.praxtourlauncher.api.entity.ApkDescription;
+import com.praxtourlauncher.api.entity.LoginUser;
+import com.praxtourlauncher.api.entity.ServerStatus;
 
 import java.net.URL;
 import java.util.List;

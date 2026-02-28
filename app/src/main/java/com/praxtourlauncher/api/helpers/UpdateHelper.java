@@ -1,6 +1,4 @@
-package com.remoteupdatemanager.api.helpers;
-
-import java.net.URL;
+package com.praxtourlauncher.api.helpers;
 
 public class UpdateHelper {
 

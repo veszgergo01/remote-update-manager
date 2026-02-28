@@ -1,6 +1,4 @@
-package com.remoteupdatemanager.api.entity;
-
-import androidx.annotation.NonNull;
+package com.praxtourlauncher.api.entity;
 
 public class ApiKey {
     private String apiKey;

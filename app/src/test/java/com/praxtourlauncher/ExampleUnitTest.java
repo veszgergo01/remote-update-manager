@@ -1,4 +1,4 @@
-package com.remoteupdatemanager;
+package com.praxtourlauncher;
 
 import org.junit.Test;
 

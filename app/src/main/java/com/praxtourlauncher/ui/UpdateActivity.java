@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.ui;
+package com.praxtourlauncher.ui;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -27,18 +27,18 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.remoteupdatemanager.api.PraxCloud;
-import com.remoteupdatemanager.api.entity.ApkDescription;
-import com.remoteupdatemanager.install.PraxPackageInstaller;
-import com.remoteupdatemanager.R;
-import com.remoteupdatemanager.download.ApkDownloader;
-import com.remoteupdatemanager.download.CallbackByteChannel;
-import com.remoteupdatemanager.download.ProgressCallback;
+import com.praxtourlauncher.api.PraxCloud;
+import com.praxtourlauncher.api.entity.ApkDescription;
+import com.praxtourlauncher.install.PraxPackageInstaller;
+import com.praxtourlauncher.R;
+import com.praxtourlauncher.download.ApkDownloader;
+import com.praxtourlauncher.download.CallbackByteChannel;
+import com.praxtourlauncher.download.ProgressCallback;
 
-import static com.remoteupdatemanager.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
-import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
-import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
-import static com.remoteupdatemanager.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
+import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
+import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
+import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
+import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 
 import java.io.File;
 import java.io.IOException;

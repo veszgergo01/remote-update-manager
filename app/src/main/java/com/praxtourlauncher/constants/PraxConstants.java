@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.constants;
+package com.praxtourlauncher.constants;
 
 public class PraxConstants {
     public static class IntentExtra {

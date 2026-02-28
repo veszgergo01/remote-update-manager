@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.download;
+package com.praxtourlauncher.download;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

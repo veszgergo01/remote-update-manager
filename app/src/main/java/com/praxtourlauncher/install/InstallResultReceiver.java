@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.install;
+package com.praxtourlauncher.install;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
+import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
 
 public class InstallResultReceiver extends BroadcastReceiver {
     private final static String TAG = InstallResultReceiver.class.getSimpleName();

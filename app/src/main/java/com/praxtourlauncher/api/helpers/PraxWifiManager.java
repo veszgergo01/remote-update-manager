@@ -1,7 +1,7 @@
-package com.remoteupdatemanager.api.helpers;
+package com.praxtourlauncher.api.helpers;
 
-import static com.remoteupdatemanager.constants.PraxConstants.Connectivity.NO_WIFI_PERMISSION;
-import static com.remoteupdatemanager.constants.PraxConstants.Connectivity.WIFI_NOT_CONNECTED;
+import static com.praxtourlauncher.constants.PraxConstants.Connectivity.NO_WIFI_PERMISSION;
+import static com.praxtourlauncher.constants.PraxConstants.Connectivity.WIFI_NOT_CONNECTED;
 
 import android.Manifest;
 import android.content.Context;

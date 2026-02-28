@@ -1,4 +1,4 @@
-package com.remoteupdatemanager;
+package com.praxtourlauncher;
 
 import android.content.Context;
 

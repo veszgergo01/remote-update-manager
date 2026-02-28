@@ -1,13 +1,11 @@
-package com.remoteupdatemanager.install;
-
-import static com.remoteupdatemanager.constants.PraxConstants.ApkUpdate.DOWNLOADED_APK_FILENAME;
+package com.praxtourlauncher.install;
 
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 
-import com.remoteupdatemanager.api.helpers.UpdateHelper;
+import com.praxtourlauncher.api.helpers.UpdateHelper;
 
 import java.io.File;
 import java.io.FileInputStream;

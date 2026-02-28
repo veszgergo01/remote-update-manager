@@ -1,4 +1,4 @@
-package com.remoteupdatemanager.startonboot;
+package com.praxtourlauncher.startonboot;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import com.remoteupdatemanager.R;
-import com.remoteupdatemanager.ui.LoginActivity;
+import com.praxtourlauncher.R;
+import com.praxtourlauncher.ui.LoginActivity;
 
 public class OnBootCompletedBroadcastReceiver extends BroadcastReceiver {
     @Override
