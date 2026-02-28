@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-02-21T11:54:42.591953Z">
+        <DropdownSelection timestamp="2026-02-21T23:40:38.226816700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\veszg\.android\avd\STREAMING_PRAXTOUR_API_30.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\veszg\.android\avd\STREAMING_PRAXTOUR_API_24.avd" />
             </handle>
           </Target>
         </DropdownSelection>

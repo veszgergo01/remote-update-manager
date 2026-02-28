@@ -11,7 +11,11 @@ public class ApkDescription {
 
     private String appName;
 
-    private int fileSizeMb;
+    private long fileSizeBytes;
+
+    private String appRemoteFolder;
+
+    private String appImageFilepath;
 
     public Integer getId() {
         return id;
@@ -53,11 +57,27 @@ public class ApkDescription {
         this.appName = appName;
     }
 
-    public int getFileSizeMb() {
-        return fileSizeMb;
+    public long getFileSizeBytes() {
+        return fileSizeBytes;
     }
 
-    public void setFileSizeMb(int fileSizeMb) {
-        this.fileSizeMb = fileSizeMb;
+    public void setFileSizeBytes(int fileSizeBytes) {
+        this.fileSizeBytes = fileSizeBytes;
+    }
+
+    public String getAppRemoteFolder() {
+        return appRemoteFolder;
+    }
+
+    public void setAppRemoteFolder(String appRemoteFolder) {
+        this.appRemoteFolder = appRemoteFolder;
+    }
+
+    public String getAppImageFilepath() {
+        return appImageFilepath;
+    }
+
+    public void setAppImageFilepath(String appImageFilepath) {
+        this.appImageFilepath = appImageFilepath;
     }
 }

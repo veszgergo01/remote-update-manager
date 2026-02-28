@@ -175,6 +175,9 @@ public class UpdateActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Does not process itself, since it is not possible to install your own package cleanly.
+     */
     private void processNextPackage() {
         new Thread(() -> {
             if (!packagesInfo.isEmpty()) {
@@ -189,7 +192,7 @@ public class UpdateActivity extends AppCompatActivity {
                     runOnUiThread(this::showDownloadStep);
                     boolean downloaded = downloadApk();
                     if (!downloaded) {
-                        displayErrorEncountered(ErrorStep.DOWNLOAD);
+                        runOnUiThread(() -> displayErrorEncountered(ErrorStep.DOWNLOAD));
                         return;
                     }
                 }
@@ -245,7 +248,7 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private boolean downloadApk() {
-        File apkFile = ApkDownloader.download(this, currentBeingProcessed.getApkFilepath(), currentBeingProcessed.getFileSizeMb() * 1024 * 1024L, new ProgressCallback() {
+        File apkFile = ApkDownloader.download(this, currentBeingProcessed.getApkFilepath(), currentBeingProcessed.getFileSizeBytes(), new ProgressCallback() {
             @Override
             public void callback(CallbackByteChannel rbc, double progress) {
                 downloadStatusProgressBar.setProgress((int) progress);
@@ -254,7 +257,6 @@ public class UpdateActivity extends AppCompatActivity {
         runOnUiThread(() -> downloadStatusProgressBar.setVisibility(View.GONE));
 
         if (apkFile == null) {
-            runOnUiThread(() -> displayErrorEncountered(ErrorStep.DOWNLOAD));
             return false;
         }
         Log.d(TAG, "Greg file is ok: " + apkFile.getAbsolutePath());

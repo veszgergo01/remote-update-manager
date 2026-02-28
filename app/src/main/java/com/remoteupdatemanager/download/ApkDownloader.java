@@ -39,7 +39,7 @@ public class ApkDownloader implements ProgressCallback {
         File outputFile = new File(context.getCacheDir(), filename);
         Log.d(TAG, "Greg output path: " + outputFile.getAbsolutePath());
         try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
-            fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+            fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, expectedSizeBytes);
         } catch (IOException e) {
             Log.e(TAG, "Error during download: " + e);
             return null;
