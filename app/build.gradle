@@ -38,7 +38,7 @@ android {
                 variant ->
                     variant.outputs.each{
                         output->
-                            def name = "${VERSION_NAME}.${VERSION_CODE}.${VERSION_REVISION}.apk"
+                            def name = "Launcher-${VERSION_NAME}.${VERSION_CODE}.${VERSION_REVISION}.apk"
                             output.outputFileName = name
                     }
             }
