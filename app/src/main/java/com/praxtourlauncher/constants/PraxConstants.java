@@ -13,6 +13,8 @@ public class PraxConstants {
     public static class ApkUpdate {
         public static final String EVENT_INSTALL_COMPLETE = "com.videostreamtest.EVENT_INSTALL_COMPLETE";
         public static final String DOWNLOADED_APK_FILENAME = "downloaded-apk.apk";
+
+        public static final String PRAXTOUR_APP_PACKAGE_NAME = "com.videostreamtest";
     }
 
     public static class Api {

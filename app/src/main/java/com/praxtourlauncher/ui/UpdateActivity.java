@@ -37,6 +37,7 @@ import com.praxtourlauncher.download.ProgressCallback;
 
 import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
 import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.EVENT_INSTALL_COMPLETE;
+import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.PRAXTOUR_APP_PACKAGE_NAME;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 
@@ -54,8 +55,6 @@ public class UpdateActivity extends AppCompatActivity {
     // ~200MB
     private static final long APK_EXPECTED_FILE_SIZE = 200 * 1024 * 1024L; // TODO put on cloudserver as metadata
     private static final int MIN_WAIT_TIME_LOADING_MS = 1500;
-
-    public static final String PRAXTOUR_APP_PACKAGE_NAME = "com.videostreamtest";
     private String accountToken;
     Stack<ApkDescription> packagesInfo = new Stack<>();
 
@@ -155,6 +154,8 @@ public class UpdateActivity extends AppCompatActivity {
                 installationInProgressLayout.setVisibility(View.VISIBLE);
                 boolean result = PraxPackageInstaller.installApk(this, currentBeingProcessed.getApkFilepath());
                 if (!result) throw new IOException("Unknown error:(");
+
+                deleteApkFromCache();
             } catch (IOException e) {
                 runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL));
                 Log.e(TAG, "Greg uh-oh " + e);
@@ -244,7 +245,8 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private boolean isApkAvailableLocally() {
-        return new File(getCacheDir(), currentBeingProcessed.getVersion()).exists();
+        String savedFileName = currentBeingProcessed.getVersion() + ".apk";
+        return new File(getCacheDir(), savedFileName).exists();
     }
 
     private boolean downloadApk() {
@@ -398,6 +400,12 @@ public class UpdateActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             return "ERROR";
         }
+    }
+
+    private void deleteApkFromCache() {
+        String filename = currentBeingProcessed.getVersion() + ".apk";
+        // inside a log just for debugging, but essentially deletes the apk to not fill up cache
+        Log.d(TAG, "Greg del: " + new File(getCacheDir(), filename).delete());
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.praxtourlauncher.ui;
 
 import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
+import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.PRAXTOUR_APP_PACKAGE_NAME;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
+import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
 
 import android.annotation.SuppressLint;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +30,7 @@ import com.praxtourlauncher.api.entity.Product;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -45,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button previousButton;
     private Button retryButton;
     private ImageView serverStatusImageView;
+    private ProgressBar serverStatusLoadingWheel;
+    private Button retryServerConnectionButton;
 
     private String apikey;
 
@@ -74,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
         previousButton = findViewById(R.id.previous_button);
         retryButton = findViewById(R.id.retry_button);
         serverStatusImageView = findViewById(R.id.server_status_indicator);
+        serverStatusLoadingWheel = findViewById(R.id.server_status_loading_wheel);
+        retryServerConnectionButton = findViewById(R.id.retry_server_connection_button);
 
         nextButton.setOnClickListener(v -> {
             switch (step) {
@@ -110,21 +118,47 @@ public class LoginActivity extends AppCompatActivity {
             clearSavedCredentials();
         }
 
-        if (checkForSavedApikey()) {
-            openInstallerActivity();
-        }
-
         previousButton.setOnClickListener(v -> showEnterUsernamePage());
 
-        // FIXME show loading until this is confirmed
+        retryServerConnectionButton.setOnClickListener(v -> retryServerConnection());
+        // initial try to connect to server
+        retryServerConnection();
+    }
+
+    private void retryServerConnection() {
         new Thread(() -> {
-            if (isServerOnline()) {
-                runOnUiThread(() -> serverStatusImageView.setImageResource(R.drawable.green_tick));
+            boolean serverOnline = isServerOnline();
+
+            runOnUiThread(() -> {
+                serverStatusLoadingWheel.setVisibility(View.GONE);
+                serverStatusImageView.setVisibility(View.VISIBLE);
+            });
+
+            if (serverOnline) {
+                runOnUiThread(() -> {
+                    serverStatusImageView.setImageResource(R.drawable.green_tick);
+                    usernameInput.setEnabled(true);
+                    nextButton.setEnabled(true);
+                    retryServerConnectionButton.setVisibility(View.GONE);
+
+                    if (checkForSavedApikey()) {
+                        openInstallerActivity();
+                    } // else login screen is initialized by default
+                });
             } else {
                 runOnUiThread(() -> {
                     serverStatusImageView.setImageResource(R.drawable.red_x_cross);
                     usernameInput.setEnabled(false);
-                    // TODO implement retry connection button
+                    nextButton.setEnabled(false);
+
+                    if (checkForSavedApikey()) {
+                        launchPraxtourMainApp();
+                    }
+
+                    // control gets here if there was no saved apikey OR launching Praxtour
+                    // failed (e.g. because it has been uninstalled)
+                    retryServerConnectionButton.setVisibility(View.VISIBLE);
+                    retryServerConnectionButton.requestFocus();
                 });
             }
         }).start();
@@ -220,6 +254,19 @@ public class LoginActivity extends AppCompatActivity {
         installerIntent.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
         startActivity(installerIntent);
         finish();
+    }
+
+    private void launchPraxtourMainApp() {
+        Intent launch = getPackageManager().getLaunchIntentForPackage(PRAXTOUR_APP_PACKAGE_NAME);
+        if (launch != null) {
+            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            launch.putExtra(EXTRA_FROM_LAUNCHER, true);
+            launch.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
+            startActivity(launch);
+            finishAffinity();
+        }
     }
 
     private void restartLoginActivity() {

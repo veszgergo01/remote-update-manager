@@ -55,6 +55,7 @@
             android:background="#FFFFFF"
             android:textColor="@color/black"
             android:nextFocusDown="@id/next_button"
+            android:enabled="false"
             style="@style/AppTheme.FocusableView" />
 
         <TextView
@@ -137,12 +138,26 @@
                 android:textColor="@color/colorWhite"
                 android:text="Server Online:" />
 
+            <ProgressBar
+                android:id="@+id/server_status_loading_wheel"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+
             <ImageView
                 android:id="@+id/server_status_indicator"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/green_tick" />
+                android:src="@drawable/green_tick"
+                android:visibility="gone"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/retry_server_connection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry_button_text"
+            style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TextView
