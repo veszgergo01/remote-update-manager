@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/login_failed_textview"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="@string/login_failed_description"
             android:textColor="@color/white"

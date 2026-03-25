@@ -2,6 +2,9 @@ package com.praxtourlauncher.ui;
 
 import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
 import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.PRAXTOUR_APP_PACKAGE_NAME;
+import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_FAILED;
+import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_SUCCESS;
+import static com.praxtourlauncher.constants.PraxConstants.Auth.DEVICE_UUID;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
@@ -21,17 +24,20 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.praxtourlauncher.R;
 import com.praxtourlauncher.api.PraxCloud;
 import com.praxtourlauncher.api.entity.ApiKey;
 import com.praxtourlauncher.api.entity.LoginUser;
 import com.praxtourlauncher.api.entity.Product;
+import com.praxtourlauncher.constants.HttpStatus;
 
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -54,9 +60,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private String apikey;
 
+    private final Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
     private final PraxCloud praxCloud = new Retrofit.Builder()
             .baseUrl(PRAXCLOUD_API_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(PraxCloud.class);
 
     private enum Step {
@@ -94,6 +103,11 @@ public class LoginActivity extends AppCompatActivity {
                         apikey = authenticate(usernameInput.getText().toString(), passwordInput.getText().toString());
                         if (apikey == null) {
                             runOnUiThread(() -> showFailedLoginPage(getString(R.string.login_failed_description)));
+                            return;
+                        }
+
+                        if (!authenticateDevice()) {
+                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.invalid_device_uuid_description)));
                             return;
                         }
 
@@ -135,14 +149,21 @@ public class LoginActivity extends AppCompatActivity {
             });
 
             if (serverOnline) {
+                final boolean savedApiKey = checkForSavedApikey();
+                final boolean correctDevice = savedApiKey && authenticateDevice();
+
                 runOnUiThread(() -> {
                     serverStatusImageView.setImageResource(R.drawable.green_tick);
                     usernameInput.setEnabled(true);
                     nextButton.setEnabled(true);
                     retryServerConnectionButton.setVisibility(View.GONE);
 
-                    if (checkForSavedApikey()) {
-                        openInstallerActivity();
+                    if (savedApiKey) {
+                        if (correctDevice) {
+                            openInstallerActivity();
+                            return;
+                        }
+                        showFailedLoginPage(getString(R.string.invalid_device_uuid_description));
                     } // else login screen is initialized by default
                 });
             } else {
@@ -179,6 +200,32 @@ public class LoginActivity extends AppCompatActivity {
             return apiKey == null ? null : apiKey.getApiKey();
         } catch (IOException e) {
             throw new RuntimeException("Error during authentication", e);
+        }
+    }
+
+    private boolean authenticateDevice() {
+        try {
+            Response<String> deviceAuthResponse = praxCloud.authenticateDevice(getSavedDeviceUuid(), apikey).execute();
+            int responseCode = deviceAuthResponse.code();
+            String responseString = deviceAuthResponse.body();
+
+            if (responseCode == HttpStatus.OK.getCode()) {
+                if (!AUTH_SUCCESS.equals(responseString)) {
+                    // AUTH_SUCCESS occurs when deviceUuid matches with stored.
+                    // See further explanation in backend comments
+                    saveNewDeviceUuid(responseString);
+                }
+
+                return true;
+            }
+
+            if (responseCode == HttpStatus.UNAUTHORIZED.getCode()) {
+                return false;
+            }
+
+            throw new RuntimeException("Unexpected response code from backend during device authentication: " + responseCode);
+        } catch (IOException e) {
+            throw new RuntimeException("Error during device authentication", e);
         }
     }
 
@@ -233,7 +280,10 @@ public class LoginActivity extends AppCompatActivity {
         loginFailedTextView.setText(reason);
         loginFailedTextView.setVisibility(View.VISIBLE);
 
-        retryButton.setOnClickListener(v -> restartLoginActivity());
+        retryButton.setOnClickListener(v -> {
+            clearSavedCredentials();
+            restartLoginActivity();
+        });
     }
 
     @SuppressLint("ApplySharedPref")
@@ -247,6 +297,26 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("app", Context.MODE_PRIVATE);
         apikey = sp.getString(EXTRA_ACCOUNT_TOKEN, "");
         return !apikey.isBlank();
+    }
+
+    /**
+     * If there is no saved UUID, it means that the device has not been linked to the account yet.
+     * In this case this method will return a string with a space(!)*, which corresponds to this situation
+     * in the REST API as well.
+     * <p>
+     * Important: the UUID will be deleted when the app is uninstalled/reinstalled.
+     * <p>
+     * *not an empty string, as that will cause issues with the URL.
+     */
+    private String getSavedDeviceUuid() {
+        SharedPreferences sp = getSharedPreferences("app", Context.MODE_PRIVATE);
+        return sp.getString(DEVICE_UUID, " ");
+    }
+
+    private void saveNewDeviceUuid(String deviceUuid) {
+        SharedPreferences.Editor editor = getSharedPreferences("app", Context.MODE_PRIVATE).edit();
+        editor.putString(DEVICE_UUID, deviceUuid);
+        editor.apply();
     }
 
     private void openInstallerActivity() {

@@ -34,6 +34,11 @@ public interface PraxCloud {
     @POST("/api/login")
     Call<ApiKey> authenticateUser(@Body LoginUser loginUser);
 
+    // Note: URL path a bit questionable here, better fitting would be: /api/user/{id}/...,
+    // but with the current solution this is the most effective in terms of nr of API calls
+    @POST("/api/user/authenticate-device/{device-uuid}")
+    Call<String> authenticateDevice(@Path("device-uuid") String deviceUuid, @Header("api-key") String accountToken);
+
     //PRODUCTS
     @GET("/api/users/current/subscriptions")
     Call<List<Product>> getActiveProducts(@Header("api-key") String accountToken);

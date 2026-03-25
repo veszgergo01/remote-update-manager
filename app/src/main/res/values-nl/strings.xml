@@ -25,4 +25,5 @@
     <string name="previous_step_button_text">Vorig</string>
     <string name="next_step_button_text">Volgende</string>
     <string name="login_information_dialog">Voor meer informatie, ga naar onze website: Pour plus d\'informations, consultez notre site web: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+    <string name="invalid_device_uuid_description">Er is al een ander apparaat gekoppeld aan dit account. Neem contact met ons op om het bestaande apparaat te ontkoppelen.</string>
 </resources>

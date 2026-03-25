@@ -25,4 +25,5 @@
     <string name="previous_step_button_text">Dernier</string>
     <string name="next_step_button_text">Prochain</string>
     <string name="login_information_dialog">Pour plus d\'informations, consultez notre site web: <a href="https://praxcloud.eu" style="text-decoration: none">praxcloud.eu</a></string>
+    <string name="invalid_device_uuid_description">Un autre appareil est déjà associé à ce compte. Veuillez nous contacter pour dissocier l’appareil existant.</string>
 </resources>

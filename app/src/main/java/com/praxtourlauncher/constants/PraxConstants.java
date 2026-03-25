@@ -1,6 +1,18 @@
 package com.praxtourlauncher.constants;
 
+/**
+ * <b>DO NOT CHANGE CONSTANTS UNLESS YOU ARE SURE.</b>
+ * Some constants may be matched to that of other systems' (e.g. REST API). Carefully check
+ * compatibility before modifying them.
+ * <p>
+ * You can add new constants without issue.
+ */
 public class PraxConstants {
+    public static class Auth {
+        public static final String DEVICE_UUID = "com.videostreamtest.DEVICE_UUID";
+        public static final String AUTH_SUCCESS = "com.accessingdatamysql.AUTH_SUCCESS";
+        public static final String AUTH_FAILED = "com.accessingdatamysql.AUTH_FAILED";
+    }
     public static class IntentExtra {
         public static final String EXTRA_ACCOUNT_TOKEN = "com.videostreamtest.EXTRA_ACCOUNT_TOKEN";
         /**

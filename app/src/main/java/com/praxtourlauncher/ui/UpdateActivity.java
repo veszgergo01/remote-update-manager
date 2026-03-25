@@ -56,7 +56,7 @@ public class UpdateActivity extends AppCompatActivity {
     private static final long APK_EXPECTED_FILE_SIZE = 200 * 1024 * 1024L; // TODO put on cloudserver as metadata
     private static final int MIN_WAIT_TIME_LOADING_MS = 1500;
     private String accountToken;
-    Stack<ApkDescription> packagesInfo = new Stack<>();
+    Stack<ApkDescription> packagesInfo;
 
     private TextView titleTextView;
     private ProgressBar checkingForUpdatesLoadingWheel;
@@ -170,6 +170,7 @@ public class UpdateActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 throw new RuntimeException("Unexpected interrupt", e);
             }
+            packagesInfo = new Stack<>();
             packagesInfo.addAll(fetchAllPackageInfo());
             runOnUiThread(() -> checkingForUpdatesLoadingWheel.setVisibility(View.GONE));
             processNextPackage();
@@ -185,10 +186,12 @@ public class UpdateActivity extends AppCompatActivity {
                 currentBeingProcessed = packagesInfo.pop();
                 String packageName = currentBeingProcessed.getPackageName();
                 if (packageName.equals(getPackageName()) || !packageShouldBeProcessed(currentBeingProcessed)) {
+                    Log.d(TAG, "Skipping package" + packageName);
                     processNextPackage();
                     return;
                 }
 
+                Log.d(TAG, "Processing package " + packageName);
                 if (!isApkAvailableLocally()) {
                     runOnUiThread(this::showDownloadStep);
                     boolean downloaded = downloadApk();
