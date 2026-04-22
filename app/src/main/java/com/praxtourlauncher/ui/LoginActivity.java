@@ -196,9 +196,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private String authenticate(String username, String password) {
         try {
-            ApiKey apiKey = praxCloud.authenticateUser(new LoginUser(username, password)).execute().body();
-            return apiKey == null ? null : apiKey.getApiKey();
-        } catch (IOException e) {
+            return praxCloud.authenticateUser(new LoginUser(username, password)).execute().body().getAccountToken();
+        } catch (IOException | NullPointerException e) {
             throw new RuntimeException("Error during authentication", e);
         }
     }

@@ -5,6 +5,7 @@ import com.praxtourlauncher.api.entity.ApkDescription;
 import com.praxtourlauncher.api.entity.LoginUser;
 import com.praxtourlauncher.api.entity.Product;
 import com.praxtourlauncher.api.entity.ServerStatus;
+import com.praxtourlauncher.api.entity.User;
 
 import java.net.URL;
 import java.util.List;
@@ -31,8 +32,8 @@ public interface PraxCloud {
     Call<ServerStatus> getServerStatus();
 
     //AUTHENTICATION
-    @POST("/api/login")
-    Call<ApiKey> authenticateUser(@Body LoginUser loginUser);
+    @POST("/api/user/authenticate")
+    Call<User> authenticateUser(@Body LoginUser loginUser);
 
     // Note: URL path a bit questionable here, better fitting would be: /api/user/{id}/...,
     // but with the current solution this is the most effective in terms of nr of API calls
