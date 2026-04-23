@@ -15,11 +15,11 @@
     <string name="landing_page_description">If an update is detected by the system, it will be automatically downloaded.</string>
     <string name="permission_required_title">Action needed</string>
     <!-- 1st param: The current package being installed. 2nd param: The app name of this app (update manager). -->
-    <string name="permission_required_description">In order to install the newest version of %s, please allow %s to install packages on this device.  After pressing the button below, the system will ask you to toggle that permission. Once it is ON, you may need to press the &#9664; symbol to return to this screen.</string>
+    <string name="permission_required_description">In order to install the newest version of %s, please allow %s to applications packages on this device.  After pressing the button below, the system will ask you to toggle that permission. Once it is ON, you may need to press the &#9664; symbol to return to this screen.</string>
     <string name="grant_permission_button_text">Allow</string>
     <string name="recheck_permission_button_text">Check</string>
     <!-- 1st param: The app name of this app (update manager). 2nd param: The current package being installed. -->
-    <string name="no_permission_after_interaction">It seems you have not granted %s the permission to install packages on this device. You will not be able to continue using %s while the update is not installed.\n\nIf you believe that you have granted the necessary permissions and are seeing this message, please contact us at service@praxtour.com.</string>
+    <string name="no_permission_after_interaction">It seems you have not granted %s the permission to install applications on this device. You will not be able to continue using %s while the update is not installed.  If you believe that you have granted the necessary permissions and are seeing this message, please contact us at service@praxtour.com.</string>
     <string name="enter_username_text">Enter username</string>
     <string name="enter_username_hint">Username</string>
     <string name="enter_password_text">Enter password</string>

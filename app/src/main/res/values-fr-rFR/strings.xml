@@ -14,10 +14,10 @@
     <string name="landing_page_title">Recherche de mises à jour…</string>
     <string name="landing_page_description">Si le système détecte une mise à jour, celle-ci sera téléchargée automatiquement.</string>
     <string name="permission_required_title">Action nécassaire</string>
-    <string name="permission_required_description">Pour installer la dernière version de %s, veuillez autoriser %s à installer des paquets sur cet appareil. Après avoir appuyé sur le bouton ci-dessous, le système vous demandera de confirmer ou d\'infirmer cette autorisation. Une fois activée, vous devrez peut-être appuyer sur le symbole &#9664; pour revenir à cet écran.</string>
+    <string name="permission_required_description">Pour installer la dernière version de %s, veuillez autoriser %s à installer des applications sur cet appareil. Après avoir appuyé sur le bouton ci-dessous, le système vous demandera de confirmer ou d\'infirmer cette autorisation. Une fois activée, vous devrez peut-être appuyer sur le symbole &#9664; pour revenir à cet écran.</string>
     <string name="grant_permission_button_text">Permettre</string>
     <string name="recheck_permission_button_text">Vérifier</string>
-    <string name="no_permission_after_interaction">Il semble que vous n\'ayez pas autorisé %s à installer des paquets sur cet appareil. Vous ne pourrez pas utiliser %s tant que la mise à jour n\'est pas installée. Si vous pensez avoir accordé les autorisations nécessaires et que ce message s\'affiche, veuillez nous contacter à l\'adresse service@praxtour.com.</string>
+    <string name="no_permission_after_interaction">Il semble que vous n\'ayez pas autorisé %s à installer des applications sur cet appareil. Vous ne pourrez pas utiliser %s tant que la mise à jour n\'est pas installée. Si vous pensez avoir accordé les autorisations nécessaires et que ce message s\'affiche, veuillez nous contacter à l\'adresse service@praxtour.com.</string>
     <string name="enter_username_text">Saisissez votre nom d\'utilisateur</string>
     <string name="enter_username_hint">Nom d\'utilisateur</string>
     <string name="enter_password_text">Saisissez le mot de passe</string>

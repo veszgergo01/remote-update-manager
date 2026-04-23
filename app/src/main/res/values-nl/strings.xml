@@ -14,10 +14,10 @@
     <string name="landing_page_title">Controleren op updates…</string>
     <string name="landing_page_description">Als het systeem een ​​update detecteert, wordt deze automatisch gedownload.</string>
     <string name="permission_required_title">Actie vereist</string>
-    <string name="permission_required_description">Om de nieuwste versie van %s te installeren, moet u %s toestemming geven om pakketten op dit apparaat te installeren. Nadat u op de onderstaande knop hebt gedrukt, zal het systeem u vragen om deze toestemming in of uit te schakelen. Zodra deze is ingeschakeld, moet u mogelijk op het symbool &#9664; drukken om naar dit scherm terug te keren.</string>
+    <string name="permission_required_description">Om de nieuwste versie van %s te installeren, moet u %s toestemming geven om applicaties op dit apparaat te installeren. Nadat u op de onderstaande knop hebt gedrukt, zal het systeem u vragen om deze toestemming in of uit te schakelen. Zodra deze is ingeschakeld, moet u mogelijk op het symbool &#9664; drukken om naar dit scherm terug te keren.</string>
     <string name="grant_permission_button_text">Toestaan</string>
     <string name="recheck_permission_button_text">Controleren</string>
-    <string name="no_permission_after_interaction">Het lijkt erop dat u %s geen toestemming hebt gegeven om pakketten op dit apparaat te installeren. U kunt %s niet blijven gebruiken zolang de update niet is geïnstalleerd. Als u denkt dat u de benodigde machtigingen wel hebt verleend en dit bericht ziet, neem dan contact met ons op via service@praxtour.com.</string>
+    <string name="no_permission_after_interaction">Het lijkt erop dat u %s geen toestemming hebt gegeven om applicaties op dit apparaat te installeren. U kunt %s niet blijven gebruiken zolang de update niet is geïnstalleerd. Als u denkt dat u de benodigde machtigingen wel hebt verleend en dit bericht ziet, neem dan contact met ons op via service@praxtour.com.</string>
     <string name="enter_username_text">Voer gebruikersnaam in</string>
     <string name="enter_username_hint">Gebruikersnaam</string>
     <string name="enter_password_text">Voer wachtwoord in</string>
