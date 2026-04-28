@@ -6,7 +6,6 @@ import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_FAILED;
 import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_SUCCESS;
 import static com.praxtourlauncher.constants.PraxConstants.Auth.DEVICE_UUID;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
-import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_FROM_LAUNCHER;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_LOGOUT;
 
 import android.annotation.SuppressLint;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,9 +28,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.praxtourlauncher.R;
 import com.praxtourlauncher.api.PraxCloud;
-import com.praxtourlauncher.api.entity.ApiKey;
 import com.praxtourlauncher.api.entity.LoginUser;
 import com.praxtourlauncher.api.entity.Product;
+import com.praxtourlauncher.api.helpers.NavHelper;
+import com.praxtourlauncher.api.helpers.WifiCallback;
+import com.praxtourlauncher.api.helpers.WifiSpeedtest;
 import com.praxtourlauncher.constants.HttpStatus;
 
 import java.io.IOException;
@@ -50,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView passwordTitleTextView;
     private EditText passwordInput;
     private TextView loginFailedTextView;
+
+    private ProgressBar loadingWheel;
+    private LinearLayout everythingLayout;
 
     private Button nextButton;
     private Button previousButton;
@@ -91,6 +96,8 @@ public class LoginActivity extends AppCompatActivity {
         serverStatusImageView = findViewById(R.id.server_status_indicator);
         serverStatusLoadingWheel = findViewById(R.id.server_status_loading_wheel);
         retryServerConnectionButton = findViewById(R.id.retry_server_connection_button);
+        loadingWheel = findViewById(R.id.loading_wheel);
+        everythingLayout = findViewById(R.id.everything_layout);
 
         nextButton.setOnClickListener(v -> {
             switch (step) {
@@ -135,8 +142,39 @@ public class LoginActivity extends AppCompatActivity {
         previousButton.setOnClickListener(v -> showEnterUsernamePage());
 
         retryServerConnectionButton.setOnClickListener(v -> retryServerConnection());
-        // initial try to connect to server
-        retryServerConnection();
+
+        new Thread(() -> {
+            WifiSpeedtest.getPingTo(PRAXCLOUD_API_URL, new WifiCallback() {
+                @Override
+                public void onSuccess(long value) {
+                    // initial try to connect to server
+                    Log.d(TAG, "Greg success");
+                    runOnUiThread(() -> {
+                        loadingWheel.setVisibility(View.GONE);
+                        everythingLayout.setVisibility(View.VISIBLE);
+                    });
+
+                    retryServerConnection();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.w(TAG, "Greg error: " + e);
+                    final boolean savedApiKey = checkForSavedApikey();
+                    if (savedApiKey) {
+                        openInstallerActivity();
+                    }
+
+                    retryServerConnection();
+                }
+            });
+
+            try {
+                Thread.sleep(2500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Unexpected interrupt: " + e);
+            }
+        }).start();
     }
 
     private void retryServerConnection() {
@@ -173,7 +211,8 @@ public class LoginActivity extends AppCompatActivity {
                     nextButton.setEnabled(false);
 
                     if (checkForSavedApikey()) {
-                        launchPraxtourMainApp();
+                        Log.d(TAG, "Launching from loginactivity greg");
+                        NavHelper.launchPraxtourMainApp(this, apikey);
                     }
 
                     // control gets here if there was no saved apikey OR launching Praxtour
@@ -196,7 +235,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private String authenticate(String username, String password) {
         try {
-            return praxCloud.authenticateUser(new LoginUser(username, password)).execute().body().getAccountToken();
+            LoginUser userObj = new LoginUser(username, password);
+            return praxCloud.authenticateUser(userObj).execute().body().getAccountToken();
         } catch (IOException | NullPointerException e) {
             throw new RuntimeException("Error during authentication", e);
         }
@@ -323,19 +363,6 @@ public class LoginActivity extends AppCompatActivity {
         installerIntent.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
         startActivity(installerIntent);
         finish();
-    }
-
-    private void launchPraxtourMainApp() {
-        Intent launch = getPackageManager().getLaunchIntentForPackage(PRAXTOUR_APP_PACKAGE_NAME);
-        if (launch != null) {
-            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            launch.putExtra(EXTRA_FROM_LAUNCHER, true);
-            launch.putExtra(EXTRA_ACCOUNT_TOKEN, apikey);
-            startActivity(launch);
-            finishAffinity();
-        }
     }
 
     private void restartLoginActivity() {

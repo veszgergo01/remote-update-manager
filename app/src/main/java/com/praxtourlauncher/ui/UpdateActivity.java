@@ -29,6 +29,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.praxtourlauncher.api.PraxCloud;
 import com.praxtourlauncher.api.entity.ApkDescription;
+import com.praxtourlauncher.api.helpers.NavHelper;
+import com.praxtourlauncher.api.helpers.WifiCallback;
+import com.praxtourlauncher.api.helpers.WifiSpeedtest;
 import com.praxtourlauncher.install.PraxPackageInstaller;
 import com.praxtourlauncher.R;
 import com.praxtourlauncher.download.ApkDownloader;
@@ -82,7 +85,7 @@ public class UpdateActivity extends AppCompatActivity {
      * we could register for, the user manually has to recheck the permission. When this happens,
      * and the user did NOT grant the permission (did not toggle), a different text is displayed
      * to emphasize it. For that, this boolean is used.
-     *   */
+     */
     boolean manuallyRecheckedInstallPermission = false;
 
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -165,17 +168,28 @@ public class UpdateActivity extends AppCompatActivity {
 
         accountToken = getIntent().getStringExtra(EXTRA_ACCOUNT_TOKEN);
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(MIN_WAIT_TIME_LOADING_MS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Unexpected interrupt", e);
+        WifiSpeedtest.getPingTo(PRAXCLOUD_API_URL, new WifiCallback() {
+            @Override
+            public void onSuccess(long value) {
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(MIN_WAIT_TIME_LOADING_MS);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Unexpected interrupt", e);
+                    }
+                    packagesInfo = new Stack<>();
+                    packagesInfo.addAll(fetchAllPackageInfo());
+                    runOnUiThread(() -> checkingForUpdatesLoadingWheel.setVisibility(View.GONE));
+                    processNextPackage();
+                }).start();
             }
-            packagesInfo = new Stack<>();
-            packagesInfo.addAll(fetchAllPackageInfo());
-            runOnUiThread(() -> checkingForUpdatesLoadingWheel.setVisibility(View.GONE));
-            processNextPackage();
-        }).start();
+
+            @Override
+            public void onError(Exception e) {
+                Log.d(TAG, "Launching from updateactivity oncreate greg");
+                runOnUiThread(() -> NavHelper.launchPraxtourMainApp(UpdateActivity.this, accountToken));
+            }
+        });
     }
 
     /**
@@ -210,7 +224,8 @@ public class UpdateActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                launchPraxtourMainApp();
+                Log.d(TAG, "Launching from updateactivity processpackage greg");
+                NavHelper.launchPraxtourMainApp(UpdateActivity.this, accountToken);
             }
         }).start();
     }
@@ -351,19 +366,6 @@ public class UpdateActivity extends AppCompatActivity {
                 Uri.parse("package:" + getPackageName())
         );
         activityResultLauncher.launch(settingsIntent);
-    }
-
-    private void launchPraxtourMainApp() {
-        Intent launch = getPackageManager().getLaunchIntentForPackage(PRAXTOUR_APP_PACKAGE_NAME);
-        if (launch != null) {
-            launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            launch.putExtra(EXTRA_FROM_LAUNCHER, true);
-            launch.putExtra(EXTRA_ACCOUNT_TOKEN, accountToken);
-            startActivity(launch);
-            finishAffinity();
-        }
     }
 
     private void restartUpdateProcess() {
