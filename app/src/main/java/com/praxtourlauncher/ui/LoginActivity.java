@@ -143,29 +143,48 @@ public class LoginActivity extends AppCompatActivity {
 
         retryServerConnectionButton.setOnClickListener(v -> retryServerConnection());
 
+        retryServerConnection(); // initial try
+    }
+
+    private void retryServerConnection() {
         new Thread(() -> {
             WifiSpeedtest.getPingTo(PRAXCLOUD_API_URL, new WifiCallback() {
                 @Override
                 public void onSuccess(long value) {
-                    // initial try to connect to server
-                    Log.d(TAG, "Greg success");
+                    Log.d(TAG, "Greg ping success");
+
                     runOnUiThread(() -> {
                         loadingWheel.setVisibility(View.GONE);
                         everythingLayout.setVisibility(View.VISIBLE);
+                        showOnlineUi();
                     });
 
-                    retryServerConnection();
+                    final boolean savedApiKey = checkForSavedApikey();
+                    final boolean correctDevice = savedApiKey && authenticateDevice();
+
+                    runOnUiThread(() -> {
+                        if (savedApiKey) {
+                            if (correctDevice) {
+                                openInstallerActivity();
+                                return;
+                            }
+                            showFailedLoginPage(getString(R.string.invalid_device_uuid_description));
+                        } // else login screen is initialized by default
+                    });
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.w(TAG, "Greg error: " + e);
-                    final boolean savedApiKey = checkForSavedApikey();
-                    if (savedApiKey) {
-                        openInstallerActivity();
+                    Log.w(TAG, "Greg ping error: " + e);
+                    if (checkForSavedApikey()) {
+                        NavHelper.launchPraxtourMainApp(LoginActivity.this, apikey);
                     }
 
-                    retryServerConnection();
+                    runOnUiThread(() -> {
+                        loadingWheel.setVisibility(View.GONE);
+                        everythingLayout.setVisibility(View.VISIBLE);
+                        showNoConnectionUi();
+                    });
                 }
             });
 
@@ -177,60 +196,23 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void retryServerConnection() {
-        new Thread(() -> {
-            boolean serverOnline = isServerOnline();
-
-            runOnUiThread(() -> {
-                serverStatusLoadingWheel.setVisibility(View.GONE);
-                serverStatusImageView.setVisibility(View.VISIBLE);
-            });
-
-            if (serverOnline) {
-                final boolean savedApiKey = checkForSavedApikey();
-                final boolean correctDevice = savedApiKey && authenticateDevice();
-
-                runOnUiThread(() -> {
-                    serverStatusImageView.setImageResource(R.drawable.green_tick);
-                    usernameInput.setEnabled(true);
-                    nextButton.setEnabled(true);
-                    retryServerConnectionButton.setVisibility(View.GONE);
-
-                    if (savedApiKey) {
-                        if (correctDevice) {
-                            openInstallerActivity();
-                            return;
-                        }
-                        showFailedLoginPage(getString(R.string.invalid_device_uuid_description));
-                    } // else login screen is initialized by default
-                });
-            } else {
-                runOnUiThread(() -> {
-                    serverStatusImageView.setImageResource(R.drawable.red_x_cross);
-                    usernameInput.setEnabled(false);
-                    nextButton.setEnabled(false);
-
-                    if (checkForSavedApikey()) {
-                        Log.d(TAG, "Launching from loginactivity greg");
-                        NavHelper.launchPraxtourMainApp(this, apikey);
-                    }
-
-                    // control gets here if there was no saved apikey OR launching Praxtour
-                    // failed (e.g. because it has been uninstalled)
-                    retryServerConnectionButton.setVisibility(View.VISIBLE);
-                    retryServerConnectionButton.requestFocus();
-                });
-            }
-        }).start();
+    private void showOnlineUi() {
+        serverStatusImageView.setImageResource(R.drawable.green_tick);
+        serverStatusLoadingWheel.setVisibility(View.GONE);
+        serverStatusImageView.setVisibility(View.VISIBLE);
+        usernameInput.setEnabled(true);
+        nextButton.setEnabled(true);
+        retryServerConnectionButton.setVisibility(View.GONE);
     }
 
-    private boolean isServerOnline() {
-        try {
-            return praxCloud.getServerStatus().execute().body().getStreamserver();
-        } catch (IOException | NullPointerException e) {
-            Log.e(TAG, "Is server online catch: " + e);
-            return false;
-        }
+    private void showNoConnectionUi() {
+        serverStatusImageView.setImageResource(R.drawable.red_x_cross);
+        serverStatusLoadingWheel.setVisibility(View.GONE);
+        serverStatusImageView.setVisibility(View.VISIBLE);
+        usernameInput.setEnabled(false);
+        nextButton.setEnabled(false);
+        retryServerConnectionButton.setVisibility(View.VISIBLE);
+        retryServerConnectionButton.requestFocus();
     }
 
     private String authenticate(String username, String password) {
