@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -21,17 +23,21 @@ public class OnBootCompletedBroadcastReceiver extends BroadcastReceiver {
             if ((Intent.ACTION_BOOT_COMPLETED.equals(action) || Intent.ACTION_REBOOT.equals(action))) {
                 /*
                  * To enable the start-on-boot you'll need to adjust something in the settings:
-                 * Settings > Apps > Special App Access > Display over other apps > Praxtour (set switch on)
+                 * Settings > Apps > Special App Access > Display over other apps > Praxtour Launcher (set switch on)
                  */
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    final Intent splashActivity = new Intent(context, LoginActivity.class);
-                    splashActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(splashActivity);
-                } else {
-                    Intent serviceIntent = new Intent(context, BootStartupService.class);
-                    ContextCompat.startForegroundService(context, serviceIntent);
-                }
+                final int WAIT_BEFORE_STARTUP_MS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? 10000 : 1;
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        final Intent splashActivity = new Intent(context, LoginActivity.class);
+                        splashActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(splashActivity);
+                    } else {
+                        Intent serviceIntent = new Intent(context, BootStartupService.class);
+                        ContextCompat.startForegroundService(context, serviceIntent);
+                    }
+                }, WAIT_BEFORE_STARTUP_MS);
 
                 if (Settings.canDrawOverlays(context)) {
                     Log.e(this.getClass().getSimpleName(), "Value SplashActivity 1: true");
