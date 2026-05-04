@@ -219,8 +219,10 @@ public class LoginActivity extends AppCompatActivity {
         try {
             LoginUser userObj = new LoginUser(username, password);
             return praxCloud.authenticateUser(userObj).execute().body().getAccountToken();
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Error during authentication", e);
+        } catch (NullPointerException e) {
+            return null;
         }
     }
 
