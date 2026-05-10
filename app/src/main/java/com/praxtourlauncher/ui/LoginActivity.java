@@ -1,8 +1,6 @@
 package com.praxtourlauncher.ui;
 
 import static com.praxtourlauncher.constants.PraxConstants.Api.PRAXCLOUD_API_URL;
-import static com.praxtourlauncher.constants.PraxConstants.ApkUpdate.PRAXTOUR_APP_PACKAGE_NAME;
-import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_FAILED;
 import static com.praxtourlauncher.constants.PraxConstants.Auth.AUTH_SUCCESS;
 import static com.praxtourlauncher.constants.PraxConstants.Auth.DEVICE_UUID;
 import static com.praxtourlauncher.constants.PraxConstants.IntentExtra.EXTRA_ACCOUNT_TOKEN;
@@ -137,6 +135,8 @@ public class LoginActivity extends AppCompatActivity {
         boolean logout = incomingIntent.getBooleanExtra(EXTRA_LOGOUT, false);
         if (logout) {
             clearSavedCredentials();
+        } else {
+            verifyIncomingApikey(incomingIntent);
         }
 
         previousButton.setOnClickListener(v -> showEnterUsernamePage());
@@ -314,6 +314,30 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("app", Context.MODE_PRIVATE).edit();
         editor.clear();
         editor.commit(); // commit, because we immediately need the value saved
+        apikey = null;
+    }
+
+    /**
+     * When incoming from Praxtour#SplashActivity, we check for the passed apikey (to remain logged
+     * in when upgrading from earlier APKs). If the apikey saved differs from that passed, we clear
+     * both requiring a new login. If they match or only {@code incomingApikey} has a value, we remain
+     * logged in and continue a smooth workflow.
+     */
+    private void verifyIncomingApikey(Intent incomingIntent) {
+        checkForSavedApikey();
+        final String incomingApikey = incomingIntent.getStringExtra(EXTRA_ACCOUNT_TOKEN);
+
+        if (apikey == null) {
+            if (incomingApikey != null) {
+                apikey = incomingApikey;
+            }
+        } else {
+            // null check needed for when Launcher is started straight away, since
+            // then it will be null, but if apikey != null we can proceed safely
+            if (incomingApikey != null && !apikey.equals(incomingApikey)) {
+                clearSavedCredentials();
+            }
+        }
     }
 
     private boolean checkForSavedApikey() {
