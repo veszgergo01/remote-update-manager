@@ -113,6 +113,26 @@
             style="@style/AppTheme.FocusableView.DefaultTrainingButtonsBlueBorders"
             android:text="@string/retry_button_text"
             android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/show_error_stacktrace_button"
+            android:layout_width="50dp"
+            android:layout_height="32dp"
+            android:layout_gravity="right"
+            android:scaleType="fitCenter"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:src="@drawable/wrench"
+            android:background="@android:color/transparent"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/error_stacktrace_textview"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/red"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TextView

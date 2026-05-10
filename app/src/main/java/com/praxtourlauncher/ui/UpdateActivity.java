@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -55,8 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpdateActivity extends AppCompatActivity {
     private final static String TAG = UpdateActivity.class.getSimpleName();
-    // ~200MB
-    private static final long APK_EXPECTED_FILE_SIZE = 200 * 1024 * 1024L; // TODO put on cloudserver as metadata
+
     private static final int MIN_WAIT_TIME_LOADING_MS = 1500;
     private String accountToken;
     Stack<ApkDescription> packagesInfo;
@@ -64,9 +64,11 @@ public class UpdateActivity extends AppCompatActivity {
     private TextView titleTextView;
     private ProgressBar checkingForUpdatesLoadingWheel;
     private TextView descriptionTextView;
+    private TextView errorStacktraceTextView;
     private Button startInstallationButton;
     private Button permissionButton;
     private Button restartProcessButton;
+    private ImageButton showErrorStacktraceButton;
     private LinearLayout installationInProgressLayout;
     private SeekBar downloadStatusProgressBar;
     private TextView appAccountInfoTextView;
@@ -118,9 +120,11 @@ public class UpdateActivity extends AppCompatActivity {
         titleTextView = findViewById(R.id.title_textview);
         checkingForUpdatesLoadingWheel = findViewById(R.id.checking_for_updates_loading_wheel);
         descriptionTextView = findViewById(R.id.description_textview);
+        errorStacktraceTextView = findViewById(R.id.error_stacktrace_textview);
         startInstallationButton = findViewById(R.id.start_installation_button);
         permissionButton = findViewById(R.id.permission_button);
         restartProcessButton = findViewById(R.id.restart_process_button);
+        showErrorStacktraceButton = findViewById(R.id.show_error_stacktrace_button);
         installationInProgressLayout = findViewById(R.id.installation_in_progress_layout);
         downloadStatusProgressBar = findViewById(R.id.download_status_progressbar);
         downloadStatusProgressBar.setMax(100);
@@ -161,8 +165,16 @@ public class UpdateActivity extends AppCompatActivity {
 
                 deleteApkFromCache();
             } catch (IOException e) {
-                runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL));
+                runOnUiThread(() -> displayErrorEncountered(ErrorStep.INSTALL, e));
                 Log.e(TAG, "Greg uh-oh " + e);
+            }
+        });
+
+        showErrorStacktraceButton.setOnClickListener(v -> {
+            if (errorStacktraceTextView.getVisibility() == View.VISIBLE) {
+                errorStacktraceTextView.setVisibility(View.GONE);
+            } else {
+                errorStacktraceTextView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -178,7 +190,10 @@ public class UpdateActivity extends AppCompatActivity {
                         throw new RuntimeException("Unexpected interrupt", e);
                     }
                     packagesInfo = new Stack<>();
-                    packagesInfo.addAll(fetchAllPackageInfo());
+                    List<ApkDescription> apkDescriptions = fetchAllPackageInfo();
+                    if (apkDescriptions == null) return;
+
+                    packagesInfo.addAll(apkDescriptions);
                     runOnUiThread(() -> checkingForUpdatesLoadingWheel.setVisibility(View.GONE));
                     processNextPackage();
                 }).start();
@@ -211,7 +226,7 @@ public class UpdateActivity extends AppCompatActivity {
                     runOnUiThread(this::showDownloadStep);
                     boolean downloaded = downloadApk();
                     if (!downloaded) {
-                        runOnUiThread(() -> displayErrorEncountered(ErrorStep.DOWNLOAD));
+                        runOnUiThread(() -> displayErrorEncountered(ErrorStep.DOWNLOAD, null));
                         return;
                     }
                 }
@@ -297,22 +312,8 @@ public class UpdateActivity extends AppCompatActivity {
         try {
             return praxCloud.getAllPackagesPublicInfo(accountToken).execute().body();
         } catch (IOException e) {
-            throw new RuntimeException("Problem while getting package names");
-        }
-    }
-
-    private URL fetchUpdateLink(String packageName) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PRAXCLOUD_API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PraxCloud praxCloud = retrofit.create(PraxCloud.class);
-
-        try {
-            return praxCloud.getNewestUpdateUrl(packageName, accountToken).execute().body();
-        } catch (IOException e) {
-            throw new RuntimeException("Problem while getting package URL for " + packageName);
+            runOnUiThread(() -> displayErrorEncountered(ErrorStep.FETCH_INFO, e));
+            return null;
         }
     }
 
@@ -374,13 +375,20 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     enum ErrorStep {
+        FETCH_INFO,
         DOWNLOAD,
         INSTALL
     }
 
-    private void displayErrorEncountered(ErrorStep step) {
-        String titleText = "";
-        String titleDescription = "";
+    /**
+     *
+     * @param step the {@link ErrorStep} that reflects the stage of the execution the error was encountered
+     * @param e the error encountered during execution. If {@code null}, a default text will be displayed
+     *          informing the user of unknown error source.
+     */
+    private void displayErrorEncountered(ErrorStep step, Exception e) {
+        String titleText;
+        String titleDescription;
 
         switch (step) {
             case DOWNLOAD:
@@ -390,11 +398,36 @@ public class UpdateActivity extends AppCompatActivity {
             case INSTALL:
                 titleText = "Error while installing APK";
                 titleDescription = "We encountered an error while installing the update. Please try again. If the problem persists, contact us at service@praxtour.com";
+                break;
+            case FETCH_INFO:
+                titleText = "Server error";
+                titleDescription = "We encountered an error while fetching information from the database. If the problem persists, contact us at service@praxtour.com";
+                checkingForUpdatesLoadingWheel.setVisibility(View.GONE);
+                break;
+            default:
+                titleText = "Unknown error";
+                titleDescription = "We encountered an error that we could not recover from. If the problem persists, contact us at service@praxtour.com";
+        }
+
+        String errorStacktrace;
+        if (e != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(e).append("\n");
+
+            for (StackTraceElement ste : e.getStackTrace()) {
+                sb.append(ste).append("\n");
+            }
+            errorStacktrace = sb.toString();
+        } else {
+            errorStacktrace = "Error stacktrace unknown";
         }
 
         titleTextView.setText(titleText);
         descriptionTextView.setText(titleDescription);
+        errorStacktraceTextView.setText(errorStacktrace);
+        showErrorStacktraceButton.setVisibility(View.VISIBLE);
         restartProcessButton.setVisibility(View.VISIBLE);
+        restartProcessButton.requestFocus();
     }
 
     private String getAppVersion() {
