@@ -107,19 +107,22 @@ public class LoginActivity extends AppCompatActivity {
                 case ENTER_PASSWORD:
                     if (passwordInput.getText().toString().isBlank()) return;
                     new Thread(() -> {
-                        apikey = authenticate(usernameInput.getText().toString(), passwordInput.getText().toString());
+                        final String username = usernameInput.getText().toString();
+                        final String password = passwordInput.getText().toString();
+
+                        apikey = authenticate(username, password);
                         if (apikey == null) {
                             runOnUiThread(() -> showFailedLoginPage(getString(R.string.login_failed_description)));
                             return;
                         }
 
-                        if (!authenticateDevice()) {
-                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.invalid_device_uuid_description)));
+                        if (!userHasExistingProducts()) {
+                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.no_active_products_description)));
                             return;
                         }
 
-                        if (!userHasExistingProducts()) {
-                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.no_active_products_description)));
+                        if (!authenticateDevice()) {
+                            runOnUiThread(() -> showFailedLoginPage(getString(R.string.invalid_device_uuid_description)));
                             return;
                         }
 
