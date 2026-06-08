@@ -32,7 +32,7 @@ public interface PraxCloud {
     Call<ServerStatus> getServerStatus();
 
     //AUTHENTICATION
-    @POST("/api/user/authenticate-app")
+    @POST("/api/user/authenticate")
     Call<User> authenticateUser(@Body LoginUser loginUser);
 
     // Note: URL path a bit questionable here, better fitting would be: /api/user/{id}/...,
