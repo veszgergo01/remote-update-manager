@@ -57,24 +57,25 @@
             android:exported="false">
         </receiver>
 
-        <receiver android:name=".startonboot.OnBootCompletedBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            android:directBootAware="true">
-            <intent-filter>
-                <!-- REGISTER TO RECEIVE BOOT_COMPLETED EVENTS -->
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.REBOOT"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
+        <!-- NOTE: Needed if Launcher is start on boot -->
+<!--        <receiver android:name=".startonboot.OnBootCompletedBroadcastReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true"-->
+<!--            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"-->
+<!--            android:directBootAware="true">-->
+<!--            <intent-filter>-->
+<!--                &lt;!&ndash; REGISTER TO RECEIVE BOOT_COMPLETED EVENTS &ndash;&gt;-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
+<!--                <action android:name="android.intent.action.REBOOT"/>-->
+<!--                <action android:name="android.intent.action.QUICKBOOT_POWERON" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
 
-        <service
-            android:name=".startonboot.BootStartupService"
-            android:foregroundServiceType="dataSync|connectedDevice"
-            android:exported="false" />
+<!--        <service-->
+<!--            android:name=".startonboot.BootStartupService"-->
+<!--            android:foregroundServiceType="dataSync|connectedDevice"-->
+<!--            android:exported="false" />-->
     </application>
 
 </manifest>
