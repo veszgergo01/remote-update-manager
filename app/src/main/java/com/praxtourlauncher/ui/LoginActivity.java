@@ -154,18 +154,14 @@ public class LoginActivity extends AppCompatActivity {
             WifiSpeedtest.getPingTo(PRAXCLOUD_API_URL, new WifiCallback() {
                 @Override
                 public void onSuccess(long value) {
-                    Log.d(TAG, "Greg ping success");
-
                     runOnUiThread(() -> {
                         loadingWheel.setVisibility(View.GONE);
                         everythingLayout.setVisibility(View.VISIBLE);
                         showOnlineUi();
-                    });
 
-                    final boolean savedApiKey = checkForSavedApikey();
-                    final boolean correctDevice = savedApiKey && authenticateDevice();
+                        final boolean savedApiKey = checkForSavedApikey();
+                        final boolean correctDevice = savedApiKey && authenticateDevice();
 
-                    runOnUiThread(() -> {
                         if (savedApiKey) {
                             if (correctDevice) {
                                 openInstallerActivity();
@@ -181,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.w(TAG, "Greg ping error: " + e);
                     if (checkForSavedApikey()) {
                         NavHelper.launchPraxtourMainApp(LoginActivity.this, apikey);
+                        return;
                     }
 
                     runOnUiThread(() -> {
