@@ -151,6 +151,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void retryServerConnection() {
         new Thread(() -> {
+            final boolean savedApiKey = checkForSavedApikey();
+            final boolean correctDevice = savedApiKey && authenticateDevice();
+
             WifiSpeedtest.getPingTo(PRAXCLOUD_API_URL, new WifiCallback() {
                 @Override
                 public void onSuccess(long value) {
@@ -158,9 +161,6 @@ public class LoginActivity extends AppCompatActivity {
                         loadingWheel.setVisibility(View.GONE);
                         everythingLayout.setVisibility(View.VISIBLE);
                         showOnlineUi();
-
-                        final boolean savedApiKey = checkForSavedApikey();
-                        final boolean correctDevice = savedApiKey && authenticateDevice();
 
                         if (savedApiKey) {
                             if (correctDevice) {
